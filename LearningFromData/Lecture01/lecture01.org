@@ -1,1 +1,95 @@
-* Lecture 01
+* Lecture 01 The Learning Problem
+- These are my notes based on the online course [[https://work.caltech.edu/telecourse.html][Learning from Data]] at Cal Tech by Professor Yaser Abu-Mostafa
+- The first lecture is at [[https://www.youtube.com/watch?v=mbyG85GZ0PI&hd=1][You Tube]]
+- The audio does kind of fade in and out
+
+** Story Line
+There is a theme through the course.  Each lecture is not wholely independent from each other.  The key steps in our story are
+- What is Learning?
+- Can we learn?
+- How to learn?
+- How to learn well?
+- Take home lessons
+Lecture 3 is a practical topic not really part of the story.  Gives you tools to actually work on this material.  Avoids the course from being too theoretical at the start.
+
+** Examples of Machine Learning
+- Predicting how a viewer will rate a movie
+- The essesnce of machine learning, need these 3 components to do machine learning
+  - A pattern exists → without there is nothing to look for
+  - We can not pin it down mathematically → can not write down a single equation for this
+  - We have to have data → no data no learning
+
+*** Learning Approach
+- Each viewer's vector will be different
+- Each movie's vector will be different
+- combine these 2 to see if a user will like a particular movie
+- Machine Learning will reverse engineer this process
+  - start with rating and find consistent factors
+  - Nudge factors of the vectors to get back to rating ever so slowly
+  - Do this not for a single rating but millions.  Do it over and over again and eventually the factors become mearningful for the ratings.
+
+** Components of Learning
+- Credit Card example
+  - bank wants to make money on new cards
+  - based on historical data predict how a new customer will do
+
+- Formalization
+  - Input X (customer application)
+  - Output Y (give credit or no)
+  - Target function f: x → y (ideal credit approval formula)
+  - Data (x_1, y_1), (x_2, y_2) ... (x_N, y_N) (historical record)
+  - Target function in machine learning is the unknown, solve with data
+  - Hypothesis is the formual that approximates the target function g: x → y (forumla to be used)
+    - g approximates f.  g is known f is not!
+  - Data used to train the learning algorithm to make g approximate f
+  - Learning Algorithm based on data and Hypothesis Set of forumlas \textcolor{red}{(where do these come from?)}  Guesses at g, learning algorithm will pick the winner.
+  - Why have hypothesis set?
+    - There is no downside to it you decide how you are learning (linear, neural net, etc...)
+    - There is an upside not obvious now.  Plays a pivotal role.  Lets us know if we can learn.
+    - You can do a set of all possible hypothesis
+
+- Solution Components
+  - 2 solutions components to learning
+    - No control over target function
+    - No control over data
+    - Final hyposthesis is dictated
+    - Learning Algorithm and Hypothesis set are your solution tools!
+  - Hypothesis Set.  The small h is the function the large one is all of the possible options.  g is the selected one.
+$
+\mathscr{H} = {h}
+\\
+g \in \mathscr{H}
+$
+  - The Learning Algorithm and Hypothesis together are the \textcolor{red}{Learning Model}.  Many options.
+
+** A simple model
+- Simple hypothesis the perception
+- For input x = (x_1, x_2, ... x_d) are attributes of the customer
+- The w vector is weighing which of the inputs x are important.  
+- approve credit if \sum_{i=1}^{d} w_{i}*x_{i} > threshold
+- deny if below threshold
+- this is sort of a credit score
+- do not know the w vector or threshold
+- The linear formula h \in \mathscr{H}
+$$
+h(x) = sign((\sum_{i=1}^{d} w_{i}*x_{i}) - threshold)
+$$
+- Change notation and consider threshold as a weight (w_{0} = - threshold)
+$$
+h(x) = sign((\sum_{i=1}^{d} w_{i}*x_{i}) + w_{0})
+$$
+- Introduce artificial coordinate x_0 = 1 to simplify the equation to 
+$$
+h(x) = sign(\sum_{i=0}^{d} w_{i}*x_{i})
+$$
+- In vector form
+$$
+h(x) = sign(\textbf{w}^{T}\textbf{x})
+$$
+** Types of Learning
+
+
+** Puzzle
+
+
+
