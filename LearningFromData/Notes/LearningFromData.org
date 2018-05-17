@@ -1,0 +1,70 @@
+#+TITLE:     Learning From Data
+#+AUTHOR:    Philip Tracton
+#+EMAIL:     ptracton@gmail.com
+#+OPTIONS: toc:1          only inlcude two levels in TOC
+#+OPTIONS: toc:nil        no default TOC at all
+#+LATEX_HEADER: \usepackage{graphicx}
+#+LATEX_HEADER: \usepackage{circuitikz}
+#+LATEX_HEADER: \setlength{\parindent}{1cm}
+#+LaTex_HEADER: \usepackage{listings}
+#+LaTex_HEADER: \usepackage{amsmath}
+
+
+\maketitle
+\newpage
+ #+TOC: headlines 1
+\newpage
+
+#+INCLUDE: "../Lecture01/lecture01.org"
+\newpage
+
+#+INCLUDE: "../Lecture02/lecture02.org"
+\newpage
+
+#+INCLUDE: "../Lecture03/lecture03.org"
+\newpage
+
+#+INCLUDE: "../Lecture04/lecture04.org"
+\newpage
+
+#+INCLUDE: "../Lecture05/lecture05.org"
+\newpage
+
+#+INCLUDE: "../Lecture06/lecture06.org"
+\newpage
+
+#+INCLUDE: "../Lecture07/lecture07.org"
+\newpage
+
+#+INCLUDE: "../Lecture08/lecture08.org"
+\newpage
+
+#+INCLUDE: "../Lecture09/lecture09.org"
+\newpage
+
+#+INCLUDE: "../Lecture10/lecture10.org"
+\newpage
+
+#+INCLUDE: "../Lecture11/lecture11.org"
+\newpage
+
+#+INCLUDE: "../Lecture12/lecture12.org"
+\newpage
+
+#+INCLUDE: "../Lecture13/lecture13.org"
+\newpage
+
+#+INCLUDE: "../Lecture14/lecture14.org"
+\newpage
+
+#+INCLUDE: "../Lecture15/lecture15.org"
+\newpage
+
+#+INCLUDE: "../Lecture16/lecture16.org"
+\newpage
+
+#+INCLUDE: "../Lecture17/lecture17.org"
+\newpage
+
+#+INCLUDE: "../Lecture18/lecture18.org"
+\newpage
