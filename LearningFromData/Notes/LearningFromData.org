@@ -9,6 +9,8 @@
 #+LaTex_HEADER: \usepackage{listings}
 #+LaTex_HEADER: \usepackage{amsmath}
 #+LaTex_HEADER: \usepackage{mathrsfs}
+#+LaTex_HEADER: \usepackage{hyperref}
+
 
 \maketitle
 \newpage

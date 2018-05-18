@@ -55,15 +55,16 @@ Lecture 3 is a practical topic not really part of the story.  Gives you tools to
     - Final hyposthesis is dictated
     - Learning Algorithm and Hypothesis set are your solution tools!
   - Hypothesis Set.  The small h is the function the large one is all of the possible options.  g is the selected one.
-$
+$$
 \mathscr{H} = {h}
-\\
+$$
+$$
 g \in \mathscr{H}
-$
+$$
   - The Learning Algorithm and Hypothesis together are the \textcolor{red}{Learning Model}.  Many options.
 
 ** A simple model
-- Simple hypothesis the perception
+- Simple hypothesis the perception, very simple and not very useful in reality
 - For input x = (x_1, x_2, ... x_d) are attributes of the customer
 - The w vector is weighing which of the inputs x are important.  
 - approve credit if \sum_{i=1}^{d} w_{i}*x_{i} > threshold
@@ -82,14 +83,69 @@ $$
 $$
 h(x) = sign(\sum_{i=0}^{d} w_{i}*x_{i})
 $$
-- In vector form
+- In vector form, inner product of column w and vector x
 $$
 h(x) = sign(\textbf{w}^{T}\textbf{x})
 $$
-** Types of Learning
 
+*** Perceptron Learning Algorithm
+- Implements
+$$
+h(x) = sign(\textbf{w}^{T}\textbf{x})
+$$
+- uses historical data in attempt to make w correct
+- pick a \textcolor{red}{misclassified point}
+$$
+sign(\textbf{w}^{T}\textbf{x}) \neq y_{n}
+$$
+
+- Update the weight (w) vector to be better for this point, y_n is +1 or -1
+
+$$
+\textcolor{blue}{\textbf{w}} \leftarrow \textcolor{red}{\textbf{w}} + y_{n}*x_{n}
+$$
+
+**** Iterations of PLA
+- One iteration, where (x,y) is misclassified
+$$
+\textcolor{blue}{\textbf{w}} \leftarrow \textcolor{red}{\textbf{w}} + y*x
+$$
+
+- At iteration t=1,2,3... pick a misclassified point from (x_1, y_1), (x_2, y_2) ... (x_N, y_N) and run a PLA iteration on it
+- That's it!
+- Here is an implementation [[https://machinelearningmastery.com/implement-perceptron-algorithm-scratch-python/][from machine learning master]]
+
+** Types of Learning
+*** Basic Premise of Learning
+- using a set of observations to uncover and underlying process
+- very broad, leads to many variations
+- Types
+  - Supervised Learning -- concentation of this course
+    - Any time the data and output are explicitly given, like a supervisor is helping you out
+  - Unsupervised learning 
+    - we get input data and no outputs.  Like listening to another language on radio in an effort to learning it
+  - Reinforcement Learning
+    - get the input data and \textit{some} of the output and grade of your output.  Great for playing games
 
 ** Puzzle
-
-
-
+- Superivised Learning puzzle
+  - I guess -1
+  - Doesn't matter, wants to get both answers and impossible to answer this particular problem
+** Q & A
+*** How to determine if linear seperable?
+  - Rarely true, good for examples
+  - Techniques to make it true
+  - Assume this is false
+  - pocket algoritm?
+*** How do you know if there is a pattern?
+    - You don't
+    - Covered in a future lecture
+    - Take data, apply algorithm and you can detect if you learn or not and knowing this
+    - avoid looking at data
+*** Global optimization or local optimization?
+    - Whichever works for us
+*** Hypothesis continuous or discrete
+    - Can be either
+*** How much data for a particular problem?
+    - Theory: this is the crux of theory
+    - Practical: not under your control
