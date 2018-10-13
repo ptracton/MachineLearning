@@ -1,0 +1,3 @@
+[submodule "ORA_HandsOnMachineLearning/handson-ml"]
+	path = ORA_HandsOnMachineLearning/handson-ml
+	url = https://github.com/ageron/handson-ml
