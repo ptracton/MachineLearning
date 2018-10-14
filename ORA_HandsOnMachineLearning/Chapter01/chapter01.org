@@ -127,19 +127,45 @@ Machine Learning is the science and art of programming computers so they can /le
 *** What is a labelled training set?
 - Data that includes the desired solutions
 *** What are 2 most common supervised tasks?
-- 
+- Classification
+- Regression
 *** Can you name 4 common unsupervised tasks?
+- Clustering
+- Visualization
+- Dimensionality Reduction
+- Association Rule Learning
 *** What type of Machine Learning Algorithm would you use to allow a robot to walk in various unknown terrains?
+- Reinforcement
 *** What type of algorithm would you use to segment your customers into multiple groups?
+- Unsupervised clustering
 *** Would you frame the problem of spam detection as a supervised or unsupervised learning problem?
+- Supervised
 *** What is online learning?
+- Incrementally and sequentially feeding small amounts of data to the algorithm.  Good for systems with continuous data flow.
 *** What is out of core learning?
+- Learning from huge data sets that can not fit in the machine's memory, so you get it in pieces
 *** What type of algorithm relies on a similarity measurement to make predicitions?
+- Instance based learning find most similar instance and make predictions
 *** What is the difference between a model parameter and a learning algorithm's hyperparameter?
+- Hyperparameters are used to try to tune the various model's parameters to find optimal solutions
 *** What do model based learning algorithms search for?  What is the most common strategy they use to succeed?  How do they make predictions?
+- Search for the best parameters so the model will generalize well when presented new data
 *** Can you name 4 of the main challenges in Machine Learning?
+- Insufficient Quantity of Data
+- Nonrepresentative training data
+- Poor quality data
+- Irrelevant features
+- Overfitting data
+- underfitting data
 *** If your model performs great on training data, but generalizes poorly to new instances what is happening?  Can you name 3 possible solutions?
+- Simplify the model
+- Gather more training data
+- Reduce noise in training data
 *** What is a testing set and why would you want to use it?
+- Split your data into training and test.  Training teaches the algorithm and test is used to show that it worked or not.
 *** What is the purpose of a validation set?
+- After using training data to train multiple algorithms, pick the best and try it on the validation set before using the test set
 *** What can go wrong if you tune hyperparameters using the test set?
+- You can overfit the test set
 *** What is cross-validation and why would you prefer it to a validation set?
+- Lets you compare models and hyperparameter settings without the need for separate validation sets
