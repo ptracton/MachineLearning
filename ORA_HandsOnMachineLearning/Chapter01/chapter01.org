@@ -148,7 +148,8 @@ Machine Learning is the science and art of programming computers so they can /le
 - Instance based learning find most similar instance and make predictions
 *** What is the difference between a model parameter and a learning algorithm's hyperparameter?
 - Hyperparameters are used to try to tune the various model's parameters to find optimal solutions
-*** What do model based learning algorithms search for?  What is the most common strategy they use to succeed?  How do they make predictions?
+*** What do model based learning algorithms search for?  What is the most common strategy they use to succeed? 
+*** How do they make predictions?
 - Search for the best parameters so the model will generalize well when presented new data
 *** Can you name 4 of the main challenges in Machine Learning?
 - Insufficient Quantity of Data
@@ -157,7 +158,8 @@ Machine Learning is the science and art of programming computers so they can /le
 - Irrelevant features
 - Overfitting data
 - underfitting data
-*** If your model performs great on training data, but generalizes poorly to new instances what is happening?  Can you name 3 possible solutions?
+*** If your model performs great on training data, but generalizes poorly to new instances what is happening?  
+*** Can you name 3 possible solutions?
 - Simplify the model
 - Gather more training data
 - Reduce noise in training data

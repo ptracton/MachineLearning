@@ -1,0 +1,18 @@
+* End to End Machine Learning Project
+** Definitions
+** Working with Real Data
+- A lot of different source of data
+  - [[http://wwww.kaggle.com][Kaggle]]
+  - [[https://registry.opendata.aws/][Amazon Datasets]]
+  - [[http://dataportals.org][Data Portals]]
+  - [[http://www.reddit.com/r/datasets][Reddit Datasets]]
+** Look at Big Picture
+- This chapter is a project to build a model of CA Housing Prices.
+*** Frame the Problem
+** Get the Data
+** Discover and Visualize Data to Gain Insights
+** Prepare the Data for Machine Learning
+** Select a Model and Train it
+** Fine Tune Your Model
+** Present Solutions
+** Launch, Monitor and Maintain
