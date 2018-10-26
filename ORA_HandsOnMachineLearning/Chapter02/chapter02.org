@@ -1,5 +1,11 @@
 * End to End Machine Learning Project
 ** Definitions
+   - *pipeline* is a sequence of data processing components.  Generally a series of asynchronous, self contained modules, consume a large block of data and create new results.  Later another module does the same until we reach the end.  This needs a lot of monitoring to make sure all is going well.
+#+NAME: DEFINE_RMSE
+   -  *RMSE* is /Root Mean Square Error/.  This is a typical performance measure for regression problems.  Defined as $RMSE(\mathbf{X},h) = \sqrt{\frac{1}{m} \Sigma_{i=1}^{m} (h(\mathbf{x}^{(i)}-y^{(i)}))^{2}}$.  This will measure the standard deviation of the errors in predictions that the system makes.
+#+NAME: DEFINE_MEAN_ABSOLUTE_ERROR
+   - *Mean Absolute Error* is defined as $MAE(\mathbf{X}, h) = \mvert  \frac{1}{m} \Sigma_{i=1}^{m} (h(\mathbf{x}^{(i)}-y^{(i)}))^{2} \mvert$
+   -  *Data Snooping Bias* happens when estimating the error using the test set and you will be too optimistic. 
 ** Working with Real Data
 - A lot of different source of data
   - [[http://wwww.kaggle.com][Kaggle]]
@@ -9,7 +15,53 @@
 ** Look at Big Picture
 - This chapter is a project to build a model of CA Housing Prices.
 *** Frame the Problem
+    - What is the goal of this model?
+    - What is business goal?
+    - What does final solution look like?
+*** Select Performance Measure
+    - [[DEFINE_RMSE][RMSE]] is the generally preferred performance measurement for regression work.
+    - [[DEFINE_MEAN_ABSOLUTE_ERROR][Mean Absolute Error]] may prefer to use this if there are a lot of outliers.
+    - Both are ways of measuring the distance between two vectors.  Various distance measurements or /norms/ are possible.
+      - Euclidian Norm
+      - Manhattan Norm
+      - The higher the norm index the more it focuses on large values and neglects small ones.  This is why RMSE is more sensitive to outliers than MAE
 ** Get the Data
+- [[http://github.com/ageron/handson-ml][Hands On ML Data]]
+- /export ML\_PATH=<wherever you put this data>/ml/
+- Virtual Environment.  I think they are optional, but for a production set up it makes sense.
+- [[https://jupyter.org/][Jupyter Notebooks]]
+- [[https://pandas.pydata.org/][Pandas]]
+  - [[https://pandas.pydata.org/pandas-docs/stable/generated/pandas.read_csv.html][read\_csv()]] method reads the specified CSV file and returns a pandas data frame of the material 
+  - [[https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.head.html][head()]] method to show first n rows of data frame
+  - [[https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.info.html][info()]] method to show concise summary of a data fame
+  - [[https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.describe.html][describe()]] Generates descriptive statistics that summarize the central tendency, dispersion and shape of a dataset’s distribution, excluding NaN values.
+#+BEGIN_SRC python :session :results output
+
+  import os
+  import pandas as pd
+  import matplotlib.pyplot as plt
+
+  HOUSING_CSV_PATH = "../handson-ml/datasets/housing/"
+  HOUSING_CSV_FILE = "housing.csv"
+
+  def load_housing_data(housing_path=None):
+      """
+      In a very unsafe manner load the house csv file into a pandas data frame
+      """
+      csv_path = os.path.join(housing_path, HOUSING_CSV_FILE)
+      return pd.read_csv(csv_path)
+
+  housingData = load_housing_data(HOUSING_CSV_PATH)
+  print(housingData.head())
+  print(housingData.info())
+  print(housingData.describe())
+  housingData.hist(bins=50, figsize=(20,15))
+#  plt.show()
+#  plt.savefig('../Notes/images/HousingHistogram.png', bbox_inches='tight')
+#+END_SRC
+
+*** Create a Test Set
+-  
 ** Discover and Visualize Data to Gain Insights
 ** Prepare the Data for Machine Learning
 ** Select a Model and Train it
