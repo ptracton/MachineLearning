@@ -56,8 +56,8 @@
   print(housingData.info())
   print(housingData.describe())
   housingData.hist(bins=50, figsize=(20,15))
-#  plt.show()
-#  plt.savefig('../Notes/images/HousingHistogram.png', bbox_inches='tight')
+  plt.show()
+  plt.savefig('../Notes/images/HousingHistogram.png', bbox_inches='tight')
 #+END_SRC
 
 *** Create a Test Set
