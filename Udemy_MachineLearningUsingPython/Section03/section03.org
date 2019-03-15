@@ -1,1 +1,20 @@
-* Section 03 Linear Regression
+* Linear Regression
+
+- Relationship between 2 continuous variables. The relation between 1 dependent variable and 1 or more indepdent variables.
+- Fits into below equation
+$$ Y = aX + b $$
+- Best fitting (minimize SSE predictions) the straight line is called "Regression Line"
+- SSE is the measure of difference between data and mean
+
+** Logistic Regression
+- Mainly used for binary classification, but can be used for multi
+- Model coefficient values gives us the probability that the variable belongs to whchi class, among given classes
+- Threshold of assigning the probability can be adjusted owing to our requirements.
+
+** SVM
+- Support Vector Machines
+- Useful for multi-classification (>2 targets)
+- Given several parameters, figure out which item it is
+- Select optimal hyperplane
+- Maximum margin to be present while seperating the hyperplane
+- Support Vectors: data points closest to separating hyperplane

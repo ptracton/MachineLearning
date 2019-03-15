@@ -1,1 +1,24 @@
 * Section 04 Classifier and Python Package
+** Decision Tree Classifier
+- Tree like structure
+- Splits data as a binary classifier into smaller and smaller subsets to predict accuracy
+- Primary fields include Entopy and Information Gain
+** Random Forest Classification
+- Ensemble classification method, uses multiple classifiers to arrive at target
+- for highly correlated predicaton and to assess future importance
+- Two types of feature importance measement are Gini and Permutation
+- Not suitable for higher dimensional data sinc ethe tree get sply less number of relevant features.
+** K Mean Clustering
+- Unsupervised algorithm
+- K-means++ to speed up data points convergence while initializing the cluster's center
+- Based on Lloyd's Algorithm- Iterate through the model to get static cluster center; minimize the distance between the cluster mean to the data points present in n-dimensional space.
+- Number of ways to determine optimal k value
+** Apriori Python Package
+*** Algorithm
+- Degrees of associations
+- Five primary fields that come up with Apriori are given as:
+  - Base Item
+  - Append Item
+  - Support
+  - Confidence
+  - Lift

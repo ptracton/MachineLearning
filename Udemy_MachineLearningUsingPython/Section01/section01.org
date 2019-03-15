@@ -1,1 +1,89 @@
-* Section 01 Introduction
+* Introduction
+This course is on the [[https://www.udemy.com/machine-learning-using-python/learn/v4/overview][Udemy Site]]
+
+** Data Mining
+- Data $\rightarrow$ Patterns and Trends
+- Understand Business Requirements
+- Identify the Data
+- Process the data
+- Build and deploy model.
+
+
+** Machine Learning
+- Five senses of humans and processing this information to be "intelligent"
+- Machines can have the most of the same senses, how to make them "intelligent"
+- How to get information into machine to become intelligent?
+
+** Data Sets and Terms
+- Effective usage of intelligence for a problem can be a decision or prediction
+- In ML perspective, the problem gets dfines in form of data
+- data set $\longleftrightarrow$ outcomes
+           $\downarrow$
+           Actions
+- Supervised, Semi-Supervised and Unsupervised learning
+- supervised is all about data which you can label it with anything u want. unsupervised is data which you has not classified or label. correct me if im wrong
+- Training Set
+|------------+-------------+-------------|
+| Label      | Attribute 1 | Attribute 2 |
+|------------+-------------+-------------|
+| Clock      | Hands       | Numerals    |
+|------------+-------------+-------------|
+| Book       | Alphabets   | Pages       |
+|------------+-------------+-------------|
+| Laptop     | Alphabets   | Numerals    |
+|------------+-------------+-------------|
+| Calculator | Signs       | Numerals    |
+|------------+-------------+-------------|
+| Newspaper  | Letters     | Pages       |
+|------------+-------------+-------------|
+
+- Test Set
+|---------+-------------+-------------|
+| Predict | Attribute 1 | Attribute 2 |
+|---------+-------------+-------------|
+| ???     | Hands       | Numerals    |
+|---------+-------------+-------------|
+| ???     | Alphabets   | Pages       |
+|---------+-------------+-------------|
+| ???     | Alphabets   | Numerals    |
+|---------+-------------+-------------|
+| ???     | Signs       | Numerals    |
+|---------+-------------+-------------|
+| ???     | Letters     | Pages       |
+|---------+-------------+-------------|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

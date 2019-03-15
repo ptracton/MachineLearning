@@ -1,1 +1,6 @@
-* Section 02 Usage of Machine Learning Packages in Python
+* Usage of Machine Learning Packages in Python
+** Installation of Python
+
+
+
+** Examples of Machine Learning Using Python
