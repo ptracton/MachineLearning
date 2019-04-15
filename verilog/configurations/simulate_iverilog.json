@@ -7,7 +7,6 @@
     ],
     "flow_steps": {
     "1" : "clean_up",
-    "2" : "ram_hack",
     "3" : "simulation",
     "4" : "run"
     },
@@ -22,7 +21,7 @@
         },
 	      "simulation" : {
 	          "executable": "iverilog",
-	          "arguments" : " -f rtl_sim.f $simulation +define+ICARUS "	
+	          "arguments" : " -f rtl_sim.f $simulation +define+ICARUS "
 	      },
 	      "run" : {
 	          "executable" : "./a.out",
