@@ -49,6 +49,9 @@ module testbench (/*AUTOARG*/ ) ;
    reg [3:0]   selection;
    reg         write;
    reg [31:0]  data_wr;
+   reg [7:0]   file_num;
+   reg         file_write;
+   reg         file_read;
 
    top dut(
            // Outputs
@@ -59,6 +62,9 @@ module testbench (/*AUTOARG*/ ) ;
            // Inputs
            .clk_pad_i(wb_clk),
            .rst_pad_i(wb_rst),
+           .file_num(file_num),
+           .file_read(file_read),
+           .file_write(file_write),
            .start(start),
            .address(address),
            .selection(selection),
@@ -72,6 +78,9 @@ module testbench (/*AUTOARG*/ ) ;
       selection <= 0;
       write <=0;
       data_wr <=0;
+      file_num <= 0;
+      file_read <=0;
+      file_write <=0;
    end
 
 

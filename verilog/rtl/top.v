@@ -14,7 +14,8 @@ module top (/*AUTOARG*/
    // Outputs
    dtb_pad, data_rd, active,
    // Inputs
-   clk_pad_i, rst_pad_i, start, address, selection, write, data_wr
+   clk_pad_i, rst_pad_i, file_num, file_write, file_read, address,
+   start, selection, write, data_wr
    ) ;
 
    parameter dw = 32;
@@ -25,22 +26,24 @@ module top (/*AUTOARG*/
    input rst_pad_i;
    output [31:0] dtb_pad;
 
-   input         start;
-   input [aw-1:0] address;
-   input [3:0]    selection;
-   input          write;
-   input [dw-1:0] data_wr;
+   input [7:0]   file_num;
+   input         file_write;
+   input         file_read;
+   input [aw-1:0]  address;
+   input           start;
+   input [3:0]     selection;
+   input           write;
+   input [dw-1:0]  data_wr;
    output [dw-1:0] data_rd;
-   output           active;
+   output          active;
 
    /*AUTOWIRE*/
 
-   /*AUTOREG*/
-   // Beginning of automatic regs (for this module's undeclared outputs)
-   wire             active;
-   wire [dw-1:0]    data_rd;
-   wire [31:0]      dtb_pad;
 
+   // Beginning of automatic regs (for this module's undeclared outputs)
+   wire            active;
+   wire [dw-1:0]   data_rd;
+   wire [31:0]     dtb_pad;
    // End of automatics
 
    syscon syscon0(
