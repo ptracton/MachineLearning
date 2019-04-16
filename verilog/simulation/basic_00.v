@@ -21,63 +21,8 @@ module test_case (/*AUTOARG*/ ) ;
    reg [31:0] data_out;
    integer    i;
    reg [31:0] daq_read;
+   reg [31:0] cpu_read;
 
-   task DAQ_READ;
-      input [31:0] address;
-      input [3:0]  selection;
-      input [31:0] expected;
-
-      output [31:0] data;
-      begin
-         data = 32'hFFFFFFFF;
-
-         @(posedge `WB_CLK);
-         `TB_ADDR = address;
-         `TB_SEL = selection;
-         `TB_WRITE = 0;
-         `TB_START = 1;
-
-         if (`TB_ACTIVE === 0)
-           @(posedge `TB_ACTIVE);
-
-         @(posedge `WB_CLK);
-         `TB_WRITE = 0;
-         `TB_ADDR = $random;
-         `TB_SEL = $random;
-         `TB_START = 0;
-         #1 data = `TB_DATA_RD;
-         //$display("DAQ READ addr = 0x%x data = 0x%x sel = 0x%x @ %d", address, data, selection, $time);
-         `TEST_COMPARE("DAQ READ", data, expected);
-
-      end
-   endtask // DAQ_READ
-
-   task DAQ_WRITE;
-      input [31:0] address;
-      input [3:0]  selection;
-      input [31:0] data;
-      begin
-         @(posedge `WB_CLK);
-         $display("DAQ WRITE addr = 0x%x data = 0x%x sel = 0x%x @ %d", address, data, selection, $time);
-
-         `TB_ADDR = address;
-         `TB_DATA_WR = data;
-         `TB_SEL = selection;
-         `TB_WRITE = 1;
-         `TB_START = 1;
-
-         if (`TB_ACTIVE === 0)
-           @(posedge `TB_ACTIVE);
-
-         @(posedge `WB_CLK);
-         `TB_WRITE = 0;
-         `TB_ADDR = $random;
-         `TB_DATA_WR = $random;
-         `TB_SEL = $random;
-         `TB_START = 0;
-
-      end
-   endtask // DAQ_WRITE
 
    initial begin
       daq_read = 0;
@@ -86,24 +31,32 @@ module test_case (/*AUTOARG*/ ) ;
       @(negedge `WB_RST);
       repeat (100) @(posedge `WB_CLK);
 
-      DAQ_WRITE(`WB_RAM0,    4'hF, 32'h0123_4567);
-      repeat (2) @(posedge `WB_CLK);
-      DAQ_WRITE(`WB_RAM0+4,  4'hF, 32'h89AB_CDEF);
-      repeat (2) @(posedge `WB_CLK);
-      DAQ_WRITE(`WB_RAM0+8,  4'hF, 32'hAA55_CC77);
-      repeat (2) @(posedge `WB_CLK);
-      DAQ_WRITE(`WB_RAM0+12, 4'hF, 32'hBB66_DD99);
-      repeat (2) @(posedge `WB_CLK);
-      DAQ_READ(`WB_RAM0,    4'hf, 32'h0123_4567, daq_read);
-      repeat (2) @(posedge `WB_CLK);
-      DAQ_READ(`WB_RAM0+8,  4'hf, 32'hAA55_CC77, daq_read);
-      repeat (2) @(posedge `WB_CLK);
-      DAQ_READ(`WB_RAM0+12, 4'hf, 32'hBB66_DD99, daq_read);
-      repeat (2) @(posedge `WB_CLK);
-      DAQ_READ(`WB_RAM0+4,  4'hf, 32'h89AB_CDEF, daq_read);
-      repeat (2) @(posedge `WB_CLK);
+      `DAQ_WRITES(`WB_RAM0,    4'hF, 32'h0123_4567);
+      `DAQ_WRITES(`WB_RAM0+4,  4'hF, 32'h89AB_CDEF);
+      `DAQ_WRITES(`WB_RAM0+8,  4'hF, 32'hAA55_CC77);
+      `DAQ_WRITES(`WB_RAM0+12, 4'hF, 32'hBB66_DD99);
 
-      #500;
+      `DAQ_READS(`WB_RAM0,    4'hf, 32'h0123_4567, daq_read);
+      `DAQ_READS(`WB_RAM0+8,  4'hf, 32'hAA55_CC77, daq_read);
+      `DAQ_READS(`WB_RAM0+12, 4'hf, 32'hBB66_DD99, daq_read);
+      `DAQ_READS(`WB_RAM0+4,  4'hf, 32'h89AB_CDEF, daq_read);
+
+      `CPU_WRITES(`WB_RAM3,    4'hF, 32'h0123_4567);
+      `CPU_WRITES(`WB_RAM3+4,  4'hF, 32'h89AB_CDEF);
+      `CPU_WRITES(`WB_RAM3+8,  4'hF, 32'hAA55_CC77);
+      `CPU_WRITES(`WB_RAM3+12, 4'hF, 32'hBB66_DD99);
+
+      `CPU_READS(`WB_RAM3,    4'hF, 32'h0123_4567, cpu_read);
+      `CPU_READS(`WB_RAM3+8,  4'hF, 32'hAA55_CC77, cpu_read);
+      `CPU_READS(`WB_RAM3+12, 4'hF, 32'hBB66_DD99, cpu_read);
+      `CPU_READS(`WB_RAM3+4,  4'hF, 32'h89AB_CDEF, cpu_read);
+
+      `CPU_WRITE_FILE_CONFIG(0, `WB_RAM1, `WB_RAM1+(4*20), `WB_RAM1, `WB_RAM1, 0);
+      `CPU_WRITE_FILE_CONFIG(1, `WB_RAM2, `WB_RAM2+(4*25), `WB_RAM2, `WB_RAM2, 0);
+      `CPU_WRITE_FILE_CONFIG(2, `WB_RAM3, `WB_RAM3+(4*40), `WB_RAM3, `WB_RAM3, 0);
+
+
+      repeat (50) @(posedge `WB_CLK);
       `TEST_COMPLETE;
    end
 

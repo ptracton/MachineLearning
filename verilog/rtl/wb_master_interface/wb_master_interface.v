@@ -45,30 +45,27 @@ module wb_master_interface (/*AUTOARG*/
    output reg [dw-1:0] data_rd;
    output wire         active;
 
-   reg [31:0]          addr_reg;
    reg [dw-1:0]        data_reg;
-   reg [3:0]           sel_reg;
-   reg                 write_reg;
-
 
    reg [1:0]           state;
-   reg [1:0]           next_state;
    parameter STATE_IDLE         = 2'h0;
    parameter STATE_WAIT_ACK     = 2'h1;
    parameter STATE_ERROR        = 2'h3;
 
    assign active = state != STATE_IDLE;
 
+/* -----\/----- EXCLUDED -----\/-----
    always @(posedge wb_clk)
      if (wb_rst) begin
         state <= STATE_IDLE;
      end else begin
         state <= next_state;
      end
+ -----/\----- EXCLUDED -----/\----- */
 
-   always @(*)
+   always @(posedge wb_clk)
      if (wb_rst) begin
-        next_state = STATE_IDLE;
+        state = STATE_IDLE;
         wb_adr_o = 0;
         wb_dat_o = 0;
         wb_sel_o = 0;
@@ -78,10 +75,6 @@ module wb_master_interface (/*AUTOARG*/
         wb_cti_o = 1;
         wb_bte_o = 0;
         data_rd  = 0;
-	    addr_reg = 0;
-	    data_reg = 0;
-	    sel_reg = 0;
-	    write_reg = 0;
 
      end else begin // if (wb_rst)
         case (state)
@@ -95,7 +88,7 @@ module wb_master_interface (/*AUTOARG*/
              wb_cti_o = 1;
              wb_bte_o = 0;
              if (start) begin
-                next_state = STATE_WAIT_ACK;
+                state = STATE_WAIT_ACK;
                 wb_adr_o = address;
                 wb_dat_o = data_wr;
                 wb_sel_o = selection;
@@ -105,42 +98,34 @@ module wb_master_interface (/*AUTOARG*/
                 wb_cti_o = 1;
                 wb_bte_o = 0;
                 data_rd  =0;
-		        addr_reg = address;
-		        data_reg = data_wr;
-		        sel_reg = selection;
-		        write_reg = write;
 
              end else begin
-                next_state = STATE_IDLE;
+                state = STATE_IDLE;
              end
           end // case: STATE_IDLE
           STATE_WAIT_ACK: begin
-	         wb_adr_o = addr_reg;
-             wb_dat_o = data_reg;
-             wb_sel_o = sel_reg;
-             wb_we_o  = write_reg;
              wb_cyc_o = 1;
              wb_stb_o = 1;
              wb_cti_o = 1;
              wb_bte_o = 0;
 
              if (wb_err_i || wb_rty_i) begin
-                next_state = STATE_ERROR;
+                state = STATE_ERROR;
              end else if (wb_ack_i) begin
 		        if (!write) begin
 		           data_rd = wb_dat_i;
 		        end
-                next_state = STATE_IDLE;
+                state = STATE_IDLE;
              end else begin
-                next_state = STATE_WAIT_ACK;
+                state = STATE_WAIT_ACK;
              end
 
           end // case: STATE_WAIT_ACK
           STATE_ERROR: begin
-             next_state = STATE_IDLE;
+             state = STATE_IDLE;
           end
           default: begin
-             next_state = STATE_IDLE;
+             state = STATE_IDLE;
           end
 
         endcase // case (state)

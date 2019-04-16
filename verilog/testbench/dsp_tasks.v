@@ -75,6 +75,40 @@ module dsp_tasks (/*AUTOARG*/ ) ;
       end
    endtask // CPU_WRITE
 
+   task CPU_WRITE_FILE_CONFIG;
+      input [7:0] file_number;
+      input [31:0] start_address;
+      input [31:0] end_address;
+      input [31:0] rd_ptr;
+      input [31:0] wr_ptr;
+      input [31:0] control;
+      reg [31:0]   address;
+
+      begin
+         address = `WB_RAM0 + ('h20*file_number);
+         $display("CPU WRITE CONFIG File=%d Start Address=0x%x Address =0x%x@ %d", file_number, start_address, address, $time);
+         `CPU_WRITES(address, 4'hF, start_address);
+         address = address + 4;
+         `CPU_WRITES(address, 4'hF, end_address);
+         address = address + 4;
+         `CPU_WRITES(address, 4'hF, rd_ptr);
+         address = address + 4;
+         `CPU_WRITES(address, 4'hF, wr_ptr);
+         address = address + 4;
+         `CPU_WRITES(address, 4'hF, 32'h0); //Status starts as a 0
+         address = address + 4;
+         `CPU_WRITES(address, 4'hF, control);
+         address = address + 4;
+         `CPU_WRITES(address, 4'hF, 32'h0); // Reserved 0 is a 0
+         address = address + 4;
+         `CPU_WRITES(address, 4'hF, 32'h0); // Reserved 1 is a 0
+
+      end
+   endtask // CPU_WRITE_FILE_CONFIG
+
+
+
+
    task DAQ_READ;
       input [31:0] address;
       input [3:0]  selection;

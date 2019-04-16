@@ -17,14 +17,30 @@
 `define WB_CLK      `TB.wb_clk
 `define DSP         `TB.dsp
 `define DAQ         `TB.daq
+`define DSP_TASKS   `TB.dsp_tasks
 
-`define TB_START   `TB.start
-`define TB_ADDR    `TB.address
-`define TB_SEL     `TB.selection
-`define TB_WRITE   `TB.write
-`define TB_DATA_WR `TB.data_wr
-`define TB_DATA_RD `TB.data_rd
-`define TB_ACTIVE  `TB.active
+`define DAQ_READS   `DSP_TASKS.DAQ_READ
+`define DAQ_WRITES  `DSP_TASKS.DAQ_WRITE
+
+`define CPU_READS   `DSP_TASKS.CPU_READ
+`define CPU_WRITES  `DSP_TASKS.CPU_WRITE
+`define CPU_WRITE_FILE_CONFIG `DSP_TASKS.CPU_WRITE_FILE_CONFIG
+
+`define DAQ_START   `TB.daq_start
+`define DAQ_ADDR    `TB.daq_address
+`define DAQ_SEL     `TB.daq_selection
+`define DAQ_WRITE   `TB.daq_write
+`define DAQ_DATA_WR `TB.daq_data_wr
+`define DAQ_DATA_RD `TB.daq_data_rd
+`define DAQ_ACTIVE  `TB.daq_active
+
+`define CPU_START   `TB.cpu_start
+`define CPU_ADDR    `TB.cpu_address
+`define CPU_SEL     `TB.cpu_selection
+`define CPU_WRITE   `TB.cpu_write
+`define CPU_DATA_WR `TB.cpu_data_wr
+`define CPU_DATA_RD `TB.cpu_data_rd
+`define CPU_ACTIVE  `TB.cpu_active
 
 `define RAM0        `TB.ram0
 `define RAM00       `RAM.ram0

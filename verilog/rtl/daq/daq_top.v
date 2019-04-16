@@ -12,12 +12,12 @@ module daq_top (/*AUTOARG*/
    // Outputs
    wb_m_adr_o, wb_m_dat_o, wb_m_sel_o, wb_m_we_o, wb_m_cyc_o,
    wb_m_stb_o, wb_m_cti_o, wb_m_bte_o, data_rd, active, wb_s_dat_o,
-   wb_s_ack_o, wb_s_err_o, wb_s_rty_o,
+   wb_s_ack_o, wb_s_err_o, wb_s_rty_o, file_read_data,
    // Inputs
    wb_clk, wb_rst, wb_m_dat_i, wb_m_ack_i, wb_m_err_i, wb_m_rty_i,
    start, address, selection, write, data_wr, wb_s_adr_i, wb_s_dat_i,
    wb_s_sel_i, wb_s_we_i, wb_s_cyc_i, wb_s_stb_i, wb_s_cti_i,
-   wb_s_bte_i
+   wb_s_bte_i, file_num, file_write, file_read, file_write_data
    ) ;
 
    parameter dw = 32;
@@ -61,6 +61,31 @@ module daq_top (/*AUTOARG*/
    output wire          wb_s_err_o;
    output wire          wb_s_rty_o;
 
+   input [7:0]          file_num;
+   input                file_write;
+   input                file_read;
+   input [31:0]         file_write_data;
+   output [31:0]        file_read_data;
+
+   wire                sm_start;
+   wire [aw-1:0]       sm_address;
+   wire [3:0]          sm_selection;
+   wire                sm_write;
+   wire [dw-1:0]       sm_data_wr;
+
+   wire                master_start;
+   wire [aw-1:0]       master_address;
+   wire [3:0]          master_selection;
+   wire                master_write;
+   wire [dw-1:0]       master_data_wr;
+
+   assign master_start = start | sm_start;
+   assign master_address = address | sm_address;
+   assign master_selection = selection | sm_selection;
+   assign master_write = write | sm_write;
+   assign master_data_wr = data_wr | sm_data_wr;
+
+
    wb_master_interface master(
                               // Outputs
                               .wb_adr_o(wb_m_adr_o),
@@ -83,11 +108,19 @@ module daq_top (/*AUTOARG*/
                               .wb_err_i(wb_m_err_i),
                               .wb_rty_i(wb_m_rty_i),
 
-                              .start(start),
+                              //.start(start),
                               .address(address),
                               .selection(selection),
-                              .write(write),
-                              .data_wr(data_wr)
+                              //.write(write),
+                              //.data_wr(data_wr),
+
+                              .start(master_start),
+                              // .address(master_address),
+                              //.selection(master_selection),
+                              .write(master_write),
+                              .data_wr(master_data_wr)
+
+
                               ) ;
 
    daq_slave slave(
@@ -109,5 +142,24 @@ module daq_top (/*AUTOARG*/
                    .wb_bte_i(wb_s_bte_i)
                    ) ;
 
+
+   daq_sm state_machine(
+                        // Outputs
+                        .file_read_data(file_read_data),
+                        .address(sm_address),
+                        .start(sm_start),
+                        .selection(sm_selection),
+                        .write(sm_write),
+                        .data_wr(sm_data_wr),
+                        // Inputs
+                        .wb_clk(wb_clk),
+                        .wb_rst(wb_rst),
+                        .file_num(file_num),
+                        .file_write(file_write),
+                        .file_read(file_read),
+                        .file_write_data(file_write_data),
+                        .data_rd(data_rd),
+                        .active(active)
+                        ) ;
 
 endmodule // daq_top

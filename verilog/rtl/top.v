@@ -12,10 +12,13 @@
 
 module top (/*AUTOARG*/
    // Outputs
-   dtb_pad, data_rd, active,
+   dtb_pad, file_read_data, daq_data_rd, daq_active, cpu_data_rd,
+   cpu_active,
    // Inputs
-   clk_pad_i, rst_pad_i, file_num, file_write, file_read, address,
-   start, selection, write, data_wr
+   clk_pad_i, rst_pad_i, file_num, file_write, file_read,
+   file_write_data, daq_address, daq_start, daq_selection, daq_write,
+   daq_data_wr, cpu_address, cpu_start, cpu_selection, cpu_write,
+   cpu_data_wr
    ) ;
 
    parameter dw = 32;
@@ -29,13 +32,27 @@ module top (/*AUTOARG*/
    input [7:0]   file_num;
    input         file_write;
    input         file_read;
-   input [aw-1:0]  address;
-   input           start;
-   input [3:0]     selection;
-   input           write;
-   input [dw-1:0]  data_wr;
-   output [dw-1:0] data_rd;
-   output          active;
+   input [31:0]  file_write_data;
+   output [31:0] file_read_data;
+
+
+   input [aw-1:0]  daq_address;
+   input           daq_start;
+   input [3:0]     daq_selection;
+   input           daq_write;
+   input [dw-1:0]  daq_data_wr;
+   output [dw-1:0] daq_data_rd;
+   output          daq_active;
+
+
+   input [aw-1:0]  cpu_address;
+   input           cpu_start;
+   input [3:0]     cpu_selection;
+   input           cpu_write;
+   input [dw-1:0]  cpu_data_wr;
+   output [dw-1:0] cpu_data_rd;
+   output          cpu_active;
+
 
    /*AUTOWIRE*/
 
@@ -68,9 +85,9 @@ module top (/*AUTOARG*/
                .wb_m_stb_o(wb_m2s_daq_master_stb),
                .wb_m_cti_o(wb_m2s_daq_master_cti),
                .wb_m_bte_o(wb_m2s_daq_master_bte),
-
-               .data_rd(data_rd),
-               .active(active),
+               .file_read_data(file_read_data),
+               .data_rd(daq_data_rd),
+               .active(daq_active),
 
                .wb_s_dat_o(wb_s2m_daq_slave_dat),
                .wb_s_ack_o(wb_s2m_daq_slave_ack),
@@ -85,11 +102,16 @@ module top (/*AUTOARG*/
                .wb_m_err_i(wb_s2m_daq_master_err),
                .wb_m_rty_i(wb_s2m_daq_master_rty),
 
-               .start(start),
-               .address(address),
-               .selection(selection),
-               .write(write),
-               .data_wr(data_wr),
+               .file_num(file_num),
+               .file_write(file_write),
+               .file_read(file_read),
+               .file_write_data(file_write_data),
+
+               .start(daq_start),
+               .address(daq_address),
+               .selection(daq_selection),
+               .write(daq_write),
+               .data_wr(daq_data_wr),
 
                .wb_s_adr_i(wb_m2s_daq_slave_adr),
                .wb_s_dat_i(wb_m2s_daq_slave_dat),
@@ -136,6 +158,40 @@ module top (/*AUTOARG*/
                ) ;
 
 
+   cpu_top cpu (
+                // Outputs
+                .wb_m_adr_o(wb_m2s_cpu_master_adr),
+                .wb_m_dat_o(wb_m2s_cpu_master_dat),
+                .wb_m_sel_o(wb_m2s_cpu_master_sel),
+                .wb_m_we_o(wb_m2s_cpu_master_we),
+                .wb_m_cyc_o(wb_m2s_cpu_master_cyc),
+                .wb_m_stb_o(wb_m2s_cpu_master_stb),
+                .wb_m_cti_o(wb_m2s_cpu_master_cti),
+                .wb_m_bte_o(wb_m2s_cpu_master_bte),
+                .data_rd(cpu_data_rd),
+                .active(cpu_active),
+
+                // Inputs
+                .wb_clk(wb_clk),
+                .wb_rst(wb_rst),
+                .wb_m_dat_i(wb_s2m_cpu_master_dat),
+                .wb_m_ack_i(wb_s2m_cpu_master_ack),
+                .wb_m_err_i(wb_s2m_cpu_master_err),
+                .wb_m_rty_i(wb_s2m_cpu_master_rty),
+                .start(cpu_start),
+                .address(cpu_address),
+                .selection(cpu_selection),
+                .write(cpu_write),
+                .data_wr(cpu_data_wr)
+                ) ;
+
+   //
+   // Undriven by SRAMs, ground them so they don't float and inject X's into simulation
+   //
+   assign wb_s2m_ram0_rty = 0;
+   assign wb_s2m_ram1_rty = 0;
+   assign wb_s2m_ram2_rty = 0;
+   assign wb_s2m_ram3_rty = 0;
 
    wb_ram
      #(.depth(8192))
