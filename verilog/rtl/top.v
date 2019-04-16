@@ -140,7 +140,7 @@ module top (/*AUTOARG*/
      (	   .wb_clk_i(wb_clk),
            .wb_rst_i(wb_rst),
 
-           .wb_adr_i(wb_m2s_ram0_adr),
+           .wb_adr_i(wb_m2s_ram0_adr[12:0]),
            .wb_dat_i(wb_m2s_ram0_dat),
            .wb_sel_i(wb_m2s_ram0_sel),
            .wb_we_i(wb_m2s_ram0_we),
@@ -160,7 +160,7 @@ module top (/*AUTOARG*/
      (	   .wb_clk_i(wb_clk),
            .wb_rst_i(wb_rst),
 
-           .wb_adr_i(wb_m2s_ram1_adr),
+           .wb_adr_i(wb_m2s_ram1_adr[12:0]),
            .wb_dat_i(wb_m2s_ram1_dat),
            .wb_sel_i(wb_m2s_ram1_sel),
            .wb_we_i(wb_m2s_ram1_we),
@@ -180,7 +180,7 @@ module top (/*AUTOARG*/
      (	   .wb_clk_i(wb_clk),
            .wb_rst_i(wb_rst),
 
-           .wb_adr_i(wb_m2s_ram2_adr),
+           .wb_adr_i(wb_m2s_ram2_adr[12:0]),
            .wb_dat_i(wb_m2s_ram2_dat),
            .wb_sel_i(wb_m2s_ram2_sel),
            .wb_we_i(wb_m2s_ram2_we),
@@ -200,7 +200,7 @@ module top (/*AUTOARG*/
      (	   .wb_clk_i(wb_clk),
            .wb_rst_i(wb_rst),
 
-           .wb_adr_i(wb_m2s_ram3_adr),
+           .wb_adr_i(wb_m2s_ram3_adr[12:0]),
            .wb_dat_i(wb_m2s_ram3_dat),
            .wb_sel_i(wb_m2s_ram3_sel),
            .wb_we_i(wb_m2s_ram3_we),

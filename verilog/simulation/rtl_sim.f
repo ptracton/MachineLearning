@@ -4,6 +4,7 @@
       +incdir+../behavioral/wb_intercon
       +incdir+../behavioral/
       +incdir+../behavioral/wb_common/
+      +incdir+../rtl/bus_matrix/
 +define+VERBOSE
 +define+SIM
 
@@ -15,11 +16,12 @@
 ../rtl/dsp/dsp_top.v
       ../rtl/wb_master_interface/arbiter.v
 ../rtl/wb_master_interface/wb_master_interface.v
+      ../rtl/bus_matrix/bus_matrix.v
 
       ../behavioral/wb_ram/wb_ram.v
       ../behavioral/wb_ram/wb_ram_generic.v
 
-      ../behavioral/wb_intercon/bus_matrix.v
+
       ../behavioral/wb_intercon/wb_arbiter.v
       ../behavioral/wb_intercon/wb_data_resize.v
       ../behavioral/wb_intercon/wb_mux.v

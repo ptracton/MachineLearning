@@ -18,6 +18,14 @@
 `define DSP         `TB.dsp
 `define DAQ         `TB.daq
 
+`define TB_START   `TB.start
+`define TB_ADDR    `TB.address
+`define TB_SEL     `TB.selection
+`define TB_WRITE   `TB.write
+`define TB_DATA_WR `TB.data_wr
+`define TB_DATA_RD `TB.data_rd
+`define TB_ACTIVE  `TB.active
+
 `define RAM0        `TB.ram0
 `define RAM00       `RAM.ram0
 `define MEMORY0     `RAM0.mem
@@ -42,9 +50,12 @@
 //`define RAM_IMAGE       `TEST_CASE.ram_image
 `define NUMBER_OF_TESTS `TEST_CASE.number_of_tests
 
-`define WB_DSP_RAM_BASE_ADDRESS     32'h9100_0000
+`define WB_RAM0 32'h9000_0000
+`define WB_RAM1 32'h9000_2000
+`define WB_RAM2 32'h9000_4000
+`define WB_RAM3 32'h9000_6000
 
-`define WB_DSP_BASE_ADDRESS         32'h9000_0000
+`define WB_DSP_BASE_ADDRESS         32'h7000_0000
 `define WB_DSP_EQUATION0_ADDRESS_REG `WB_DSP_BASE_ADDRESS + 8'h00
 `define WB_DSP_EQUATION1_ADDRESS_REG `WB_DSP_BASE_ADDRESS + 8'h04
 `define WB_DSP_EQUATION2_ADDRESS_REG `WB_DSP_BASE_ADDRESS + 8'h08
@@ -52,7 +63,7 @@
 `define WB_DSP_CONTROL_REG           `WB_DSP_BASE_ADDRESS + 8'h10
 `define WB_DSP_STATUS_REG            `WB_DSP_BASE_ADDRESS + 8'h14
 
-`define WB_DAQ_BASE_ADDRESS        32'h9010_0000
+`define WB_DAQ_BASE_ADDRESS        32'h8000_0000
 `define WB_DAQ_CONTROL_REG          `WB_DAQ_BASE_ADDRESS + `DAQ_CONTROL_REG_OFFSET
 `define WB_DAQ_CHANNEL0_ADDRESS_REG `WB_DAQ_BASE_ADDRESS + `DAQ_CHANNEL0_ADDRESS_OFFSET
 `define WB_DAQ_CHANNEL1_ADDRESS_REG `WB_DAQ_BASE_ADDRESS + `DAQ_CHANNEL1_ADDRESS_OFFSET
