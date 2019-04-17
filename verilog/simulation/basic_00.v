@@ -8,14 +8,14 @@
 // Update Count    : 0
 // Status          : Unknown, Use with caution!
 module test_case (/*AUTOARG*/ ) ;
-
+`include "dsp_includes.vh"
 
    //
    // Test Configuration
    // These parameters need to be set for each test case
    //
-   parameter simulation_name = "sum_00";
-   parameter number_of_tests = 80;
+   parameter simulation_name = "basic_00";
+   parameter number_of_tests = 8;
 
    reg  err;
    reg [31:0] data_out;

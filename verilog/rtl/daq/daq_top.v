@@ -105,20 +105,20 @@ module daq_top (/*AUTOARG*/
                               .wb_rst(wb_rst),
                               .wb_dat_i(wb_m_dat_i),
                               .wb_ack_i(wb_m_ack_i),
-                              .wb_err_i(wb_m_err_i),
+                              .wb_err_i(1'b0/*wb_m_err_i*/),
                               .wb_rty_i(wb_m_rty_i),
 
-                              //.start(start),
+                              .start(start),
                               .address(address),
                               .selection(selection),
-                              //.write(write),
-                              //.data_wr(data_wr),
+                              .write(write),
+                              .data_wr(data_wr)
 
-                              .start(master_start),
+                              //.start(master_start),
                               // .address(master_address),
                               //.selection(master_selection),
-                              .write(master_write),
-                              .data_wr(master_data_wr)
+                              //.write(master_write),
+                              //.data_wr(master_data_wr)
 
 
                               ) ;
