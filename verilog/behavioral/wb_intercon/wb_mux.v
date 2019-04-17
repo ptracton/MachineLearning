@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////
-///                                                               //// 
+///                                                               ////
 /// Wishbone multiplexer, burst-compatible                        ////
 ///                                                               ////
 /// Simple mux with an arbitrary number of slaves.                ////
@@ -55,27 +55,27 @@ module wb_mux
     parameter num_slaves = 2, // Number of slaves
     parameter [num_slaves*aw-1:0] MATCH_ADDR = 0,
     parameter [num_slaves*aw-1:0] MATCH_MASK = 0)
-   
+
    (input                      wb_clk_i,
-    input 		       wb_rst_i,
+    input                      wb_rst_i,
 
     // Master Interface
-    input [aw-1:0] 	       wbm_adr_i,
-    input [dw-1:0] 	       wbm_dat_i,
-    input [3:0] 	       wbm_sel_i,
-    input 		       wbm_we_i,
-    input 		       wbm_cyc_i,
-    input 		       wbm_stb_i,
-    input [2:0] 	       wbm_cti_i,
-    input [1:0] 	       wbm_bte_i,
-    output [dw-1:0] 	       wbm_dat_o,
-    output 		       wbm_ack_o,
-    output 		       wbm_err_o,
-    output 		       wbm_rty_o, 
+    input [aw-1:0]             wbm_adr_i,
+    input [dw-1:0]             wbm_dat_i,
+    input [3:0]                wbm_sel_i,
+    input                      wbm_we_i,
+    input                      wbm_cyc_i,
+    input                      wbm_stb_i,
+    input [2:0]                wbm_cti_i,
+    input [1:0]                wbm_bte_i,
+    output [dw-1:0]            wbm_dat_o,
+    output                     wbm_ack_o,
+    output                     wbm_err_o,
+    output                     wbm_rty_o,
     // Wishbone Slave interface
     output [num_slaves*aw-1:0] wbs_adr_o,
     output [num_slaves*dw-1:0] wbs_dat_o,
-    output [num_slaves*4-1:0]  wbs_sel_o, 
+    output [num_slaves*4-1:0]  wbs_sel_o,
     output [num_slaves-1:0]    wbs_we_o,
     output [num_slaves-1:0]    wbs_cyc_o,
     output [num_slaves-1:0]    wbs_stb_o,
@@ -88,21 +88,21 @@ module wb_mux
 
 `include "verilog_utils.vh"
 
-///////////////////////////////////////////////////////////////////////////////
-// Master/slave connection
-///////////////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////////////
+     // Master/slave connection
+   ///////////////////////////////////////////////////////////////////////////////
 
    localparam slave_sel_bits = num_slaves > 1 ? `clog2(num_slaves) : 1;
 
-   reg  			 wbm_err;
-   wire [slave_sel_bits-1:0] 	 slave_sel;
-   wire [num_slaves-1:0] 	 match;
+   reg                         wbm_err;
+   wire [slave_sel_bits-1:0]   slave_sel;
+   wire [num_slaves-1:0]       match;
 
-   genvar 			 idx;
+   genvar                      idx;
 
    generate
       for(idx=0; idx<num_slaves ; idx=idx+1) begin : addr_match
-	 assign match[idx] = (wbm_adr_i & MATCH_MASK[idx*aw+:aw]) == MATCH_ADDR[idx*aw+:aw];
+	     assign match[idx] = (wbm_adr_i & MATCH_MASK[idx*aw+:aw]) == MATCH_ADDR[idx*aw+:aw];
       end
    endgenerate
 
@@ -118,7 +118,7 @@ module wb_mux
 
    assign wbs_cyc_o = match & (wbm_cyc_i << slave_sel);
    assign wbs_stb_o = {num_slaves{wbm_stb_i}};
-   
+
    assign wbs_cti_o = {num_slaves{wbm_cti_i}};
    assign wbs_bte_o = {num_slaves{wbm_bte_i}};
 

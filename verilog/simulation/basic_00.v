@@ -31,15 +31,15 @@ module test_case (/*AUTOARG*/ ) ;
       @(negedge `WB_RST);
       repeat (100) @(posedge `WB_CLK);
 
-      `DAQ_WRITES(`WB_RAM0,    4'hF, 32'h0123_4567);
-      `DAQ_WRITES(`WB_RAM0+4,  4'hF, 32'h89AB_CDEF);
-      `DAQ_WRITES(`WB_RAM0+8,  4'hF, 32'hAA55_CC77);
-      `DAQ_WRITES(`WB_RAM0+12, 4'hF, 32'hBB66_DD99);
+      // `DAQ_WRITES(`WB_RAM0,    4'hF, 32'h0123_4567);
+      // `DAQ_WRITES(`WB_RAM0+4,  4'hF, 32'h89AB_CDEF);
+      // `DAQ_WRITES(`WB_RAM0+8,  4'hF, 32'hAA55_CC77);
+      // `DAQ_WRITES(`WB_RAM0+12, 4'hF, 32'hBB66_DD99);
 
-      `DAQ_READS(`WB_RAM0,    4'hf, 32'h0123_4567, daq_read);
-      `DAQ_READS(`WB_RAM0+8,  4'hf, 32'hAA55_CC77, daq_read);
-      `DAQ_READS(`WB_RAM0+12, 4'hf, 32'hBB66_DD99, daq_read);
-      `DAQ_READS(`WB_RAM0+4,  4'hf, 32'h89AB_CDEF, daq_read);
+      // `DAQ_READS(`WB_RAM0,    4'hf, 32'h0123_4567, daq_read);
+      // `DAQ_READS(`WB_RAM0+8,  4'hf, 32'hAA55_CC77, daq_read);
+      // `DAQ_READS(`WB_RAM0+12, 4'hf, 32'hBB66_DD99, daq_read);
+      // `DAQ_READS(`WB_RAM0+4,  4'hf, 32'h89AB_CDEF, daq_read);
 
       `CPU_WRITES(`WB_RAM3,    4'hF, 32'h0123_4567);
       `CPU_WRITES(`WB_RAM3+4,  4'hF, 32'h89AB_CDEF);
@@ -54,6 +54,8 @@ module test_case (/*AUTOARG*/ ) ;
       `CPU_WRITE_FILE_CONFIG(0, `WB_RAM1, `WB_RAM1+(4*20), `WB_RAM1, `WB_RAM1, 0);
       `CPU_WRITE_FILE_CONFIG(1, `WB_RAM2, `WB_RAM2+(4*25), `WB_RAM2, `WB_RAM2, 0);
       `CPU_WRITE_FILE_CONFIG(2, `WB_RAM3, `WB_RAM3+(4*40), `WB_RAM3, `WB_RAM3, 0);
+
+      repeat (500) @(posedge `WB_CLK);
 
       `DAQ_WRITES_FILE(0, 32'hdeadbeef);
 

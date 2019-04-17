@@ -12,9 +12,12 @@ module wb_ram_generic
    reg [31:0]                 mem [0:depth-1] /* verilator public */;
 
    always @(posedge clk) begin
+`ifdef RAM_DEBUG
       if (we) begin
          $display("RAM WRITE ADDR = 0x%x DIN = 0x%x @ %d", waddr, din, $time);
       end
+`endif
+
       if (we[0]) mem[waddr][7:0]   <= din[7:0];
       if (we[1]) mem[waddr][15:8]  <= din[15:8];
       if (we[2]) mem[waddr][23:16] <= din[23:16];

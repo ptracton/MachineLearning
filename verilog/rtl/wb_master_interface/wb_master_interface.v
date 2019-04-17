@@ -66,7 +66,7 @@ module wb_master_interface (/*AUTOARG*/
    always @(posedge wb_clk)
      if (wb_rst) begin
         state = STATE_IDLE;
-        wb_adr_o = 0;
+        wb_adr_o = `WB_RAM0;
         wb_dat_o = 0;
         wb_sel_o = 0;
         wb_we_o  = 0;
@@ -79,7 +79,7 @@ module wb_master_interface (/*AUTOARG*/
      end else begin // if (wb_rst)
         case (state)
           STATE_IDLE: begin
-             wb_adr_o = 0;
+             wb_adr_o = `WB_RAM0;
              wb_dat_o = 0;
              wb_sel_o = 0;
              wb_we_o  = 0;
@@ -116,6 +116,8 @@ module wb_master_interface (/*AUTOARG*/
 		           data_rd = wb_dat_i;
 		        end
                 state = STATE_IDLE;
+                wb_stb_o = 0;
+                wb_cyc_o = 0;
              end else begin
                 state = STATE_WAIT_ACK;
              end

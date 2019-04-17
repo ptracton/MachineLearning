@@ -63,7 +63,11 @@ module cpu_top (/*AUTOARG*/
                               .wb_rst(wb_rst),
                               .wb_dat_i(wb_m_dat_i),
                               .wb_ack_i(wb_m_ack_i),
-                              .wb_err_i(1'b0/*wb_m_err_i*/),
+`ifdef ICARUS
+                              .wb_err_i(1'b0),
+`else
+                              .wb_err_i(wb_m_err_i),
+`endif
                               .wb_rty_i(wb_m_rty_i),
 
                               .start(start),
