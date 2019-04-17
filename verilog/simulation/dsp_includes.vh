@@ -21,6 +21,7 @@
 
 `define DAQ_READS   `DSP_TASKS.DAQ_READ
 `define DAQ_WRITES  `DSP_TASKS.DAQ_WRITE
+`define DAQ_WRITES_FILE `DSP_TASKS.DAQ_WRITES_FILE
 
 `define CPU_READS   `DSP_TASKS.CPU_READ
 `define CPU_WRITES  `DSP_TASKS.CPU_WRITE
@@ -41,6 +42,12 @@
 `define CPU_DATA_WR `TB.cpu_data_wr
 `define CPU_DATA_RD `TB.cpu_data_rd
 `define CPU_ACTIVE  `TB.cpu_active
+
+`define FILE_NUM     `TB.file_num
+`define FILE_WRITE   `TB.file_write
+`define FILE_READ   `TB.file_read
+`define FILE_WRITE_DATA   `TB.file_write_data
+`define FILE_READ_DATA   `TB.file_read_data
 
 `define RAM0        `TB.ram0
 `define RAM00       `RAM.ram0

@@ -43,7 +43,7 @@ module dsp_tasks (/*AUTOARG*/ ) ;
           data = `CPU_DATA_RD;
          //$display("CPU READ addr = 0x%x data = 0x%x sel = 0x%x @ %d", address, data, selection, $time);
          `TEST_COMPARE("CPU READ", expected, data);
-         repeat (2) @(posedge `WB_CLK);
+         repeat (1) @(posedge `WB_CLK);
 
       end
    endtask // CPU_READ
@@ -75,7 +75,7 @@ module dsp_tasks (/*AUTOARG*/ ) ;
          `CPU_DATA_WR = $random;
          `CPU_SEL = $random;
          `CPU_START = 0;
-         repeat (2) @(posedge `WB_CLK);
+         repeat (1) @(posedge `WB_CLK);
 
       end
    endtask // CPU_WRITE
@@ -144,7 +144,7 @@ module dsp_tasks (/*AUTOARG*/ ) ;
          data = `DAQ_DATA_RD;
          //$display("DAQ READ addr = 0x%x data = 0x%x sel = 0x%x @ %d", address, data, selection, $time);
          `TEST_COMPARE("DAQ READ", expected, data);
-         repeat (2) @(posedge `WB_CLK);
+         repeat (1) @(posedge `WB_CLK);
       end
    endtask // DAQ_READ
 
@@ -175,8 +175,28 @@ module dsp_tasks (/*AUTOARG*/ ) ;
          `DAQ_DATA_WR = $random;
          `DAQ_SEL = $random;
          `DAQ_START = 0;
-         repeat (2) @(posedge `WB_CLK);
+         repeat (1) @(posedge `WB_CLK);
       end
    endtask // DAQ_WRITE
+
+
+   task DAQ_WRITES_FILE;
+      input [7:0] file_num;
+      input [31:0] data;
+      begin
+         $display("DAQ WRITES FILE File = %d Data = 0x%x @ %d", file_num, data, $time);
+         @(posedge `WB_CLK);
+
+         `FILE_NUM = file_num;
+         `FILE_WRITE = 1;
+         `FILE_WRITE_DATA = data;
+         @(posedge `WB_CLK);
+         `FILE_WRITE = 0;
+         `FILE_NUM = $random;
+         `FILE_WRITE_DATA = $random;
+
+      end
+   endtask // DAQ_WRITE_FILE
+
 
 endmodule // dsp_tasks

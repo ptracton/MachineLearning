@@ -55,6 +55,7 @@ module test_case (/*AUTOARG*/ ) ;
       `CPU_WRITE_FILE_CONFIG(1, `WB_RAM2, `WB_RAM2+(4*25), `WB_RAM2, `WB_RAM2, 0);
       `CPU_WRITE_FILE_CONFIG(2, `WB_RAM3, `WB_RAM3+(4*40), `WB_RAM3, `WB_RAM3, 0);
 
+      `DAQ_WRITES_FILE(0, 32'hdeadbeef);
 
       repeat (50) @(posedge `WB_CLK);
       `TEST_COMPLETE;
