@@ -8,6 +8,7 @@
 // Update Count    : 0
 // Status          : Unknown, Use with caution!
 
+`include "dsp_includes.vh"
 
 module wb_master_interface (/*AUTOARG*/
                             // Outputs

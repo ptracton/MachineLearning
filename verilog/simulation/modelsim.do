@@ -15,7 +15,7 @@ vlog ../rtl/daq/daq_sm.v
 vlog ../rtl/dsp/dsp_slave.v
 vlog ../rtl/dsp/dsp_top.v
 vlog ../rtl/wb_master_interface/arbiter.v
-vlog ../rtl/wb_master_interface/wb_master_interface.v +incdir+../behavioral/wb_common/
+vlog ../rtl/wb_master_interface/wb_master_interface.v +incdir+../simulation  +incdir+../testbench +incdir+../behavioral/wb_common/
 vlog ../rtl/bus_matrix/bus_matrix.v +incdir+../behavioral/wb_common/
 
 vlog ../behavioral/wb_ram/wb_ram.v +incdir+../behavioral/wb_common/
