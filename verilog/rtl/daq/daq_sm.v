@@ -12,12 +12,13 @@
 
 
 module daq_sm (/*AUTOARG*/
-               // Outputs
-               file_read_data, address, start, selection, write, data_wr,
-               // Inputs
-               wb_clk, wb_rst, file_num, file_write, file_read, file_write_data,
-               data_rd, active
-               ) ;
+   // Outputs
+   file_read_data, address, start, selection, write, data_wr,
+   file_active,
+   // Inputs
+   wb_clk, wb_rst, file_num, file_write, file_read, file_write_data,
+   data_rd, active
+   ) ;
    parameter dw = 32;
    parameter aw = 32;
    parameter DEBUG = 0;
@@ -36,6 +37,7 @@ module daq_sm (/*AUTOARG*/
    output reg [3:0]    selection;
    output reg          write;
    output reg [dw-1:0] data_wr;
+   output reg          file_active;
 
    input [dw-1:0]      data_rd;
    input               active;
@@ -51,14 +53,16 @@ module daq_sm (/*AUTOARG*/
    localparam STATE_READ_RD_PTR_DONE  = 8'h06;
    localparam STATE_READ_WR_PTR       = 8'h07;
    localparam STATE_READ_WR_PTR_DONE  = 8'h08;
-   localparam STATE_READ_CONTROL      = 8'h09;
-   localparam STATE_READ_CONTROL_DONE = 8'h0A;
-   localparam STATE_WRITE_FILE_DATA   = 8'h0B;
-   localparam STATE_WRITE_FILE_DATA_DONE = 8'h0C;
-   localparam STATE_WRITE_STATUS         = 8'h0D;
-   localparam STATE_WRITE_STATUS_DONE    = 8'h0E;
-   localparam STATE_WRITE_WR_PTR         = 8'h0F;
-   localparam STATE_WRITE_WR_PTR_DONE    = 8'h10;
+   localparam STATE_READ_STATUS       = 8'h09;
+   localparam STATE_READ_STATUS_DONE  = 8'h0A;
+   localparam STATE_READ_CONTROL      = 8'h0B;
+   localparam STATE_READ_CONTROL_DONE = 8'h0C;
+   localparam STATE_WRITE_FILE_DATA   = 8'h0D;
+   localparam STATE_WRITE_FILE_DATA_DONE = 8'h0E;
+   localparam STATE_WRITE_STATUS         = 8'h0F;
+   localparam STATE_WRITE_STATUS_DONE    = 8'h10;
+   localparam STATE_WRITE_WR_PTR         = 8'h11;
+   localparam STATE_WRITE_WR_PTR_DONE    = 8'h12;
 
    reg [31:0]          file_base_address;
    reg [31:0]          start_address;
@@ -67,6 +71,7 @@ module daq_sm (/*AUTOARG*/
    reg [31:0]          wr_ptr;
    reg [31:0]          control;
    reg [31:0]          file_write_data_reg;
+   reg [31:0]          status;
 
    reg                 srm;
 
@@ -112,6 +117,9 @@ module daq_sm (/*AUTOARG*/
          wr_ptr <=0;
          control <=0;
          file_write_data_reg <= 0;
+         status <= 0;
+         file_active <=0;
+
       end else begin
          case (state)
            STATE_IDLE: begin
@@ -121,13 +129,17 @@ module daq_sm (/*AUTOARG*/
               selection <=0;
               write <=0;
               data_wr <=0;
-              file_base_address <= 0;
-              start_address <= 0;
-              end_address <=0;
-              rd_ptr <=0;
-              wr_ptr <=0;
-              control <=0;
+              file_active <= 0;
+
+              // Don't clear these in case ew do another of the same file and we can skip stuff
+              // file_base_address <= 0;
+              // start_address <= 0;
+              // end_address <=0;
+              // rd_ptr <=0;
+              // wr_ptr <=0;
+              // control <=0;
               if (file_read | file_write) begin
+                 file_active <= 1;
                  state <= STATE_READ_START;
                  file_base_address <= `WB_RAM0 + 'h20*file_num;
                  file_write_data_reg <= file_write_data;
@@ -189,8 +201,23 @@ module daq_sm (/*AUTOARG*/
            STATE_READ_WR_PTR_DONE: begin
               start <= 0;
               if (!active) begin
-                 state <= STATE_READ_CONTROL;
+                 state <= STATE_READ_STATUS;
                  wr_ptr <= data_rd;
+              end
+           end
+
+           STATE_READ_STATUS: begin
+              srm = start_read_memory(file_base_address+`FILE_STATUS_OFFSET , 4'hF);
+              if (active) begin
+                 state <= STATE_READ_STATUS_DONE;
+              end
+           end
+
+           STATE_READ_STATUS_DONE: begin
+              start <= 0;
+              if (!active) begin
+                 state <= STATE_WRITE_FILE_DATA;
+                 status <= data_wr;
               end
            end
 
@@ -212,11 +239,49 @@ module daq_sm (/*AUTOARG*/
            STATE_WRITE_FILE_DATA : begin
               srm = start_write_memory(wr_ptr, file_write_data_reg, 4'hF);
               if (active) begin
+                 write <=0;
                  state <= STATE_WRITE_FILE_DATA_DONE;
+                 // increment pointer and deal with wrap around
+                 wr_ptr = wr_ptr + 4;
+                 if (wr_ptr > end_address) begin
+                    wr_ptr = start_address;
+                    status[`F_STATUS_WRAP_AROUND] = 1;
+                 end
               end
            end
 
+
            STATE_WRITE_FILE_DATA_DONE: begin
+              start <= 0;
+              if (!active) begin
+                 state <= STATE_WRITE_STATUS;
+              end
+           end // case: STATE_WRITE_FILE_DATA_DONE
+
+           STATE_WRITE_STATUS : begin
+              srm = start_write_memory(file_base_address+`FILE_STATUS_OFFSET, status, 4'hF);
+              if (active) begin
+                 write <=0;
+                 state <= STATE_WRITE_STATUS_DONE;
+              end
+           end
+
+           STATE_WRITE_STATUS_DONE: begin
+              start <= 0;
+              if (!active) begin
+                 state <= STATE_WRITE_WR_PTR;
+              end
+           end
+
+           STATE_WRITE_WR_PTR : begin
+              srm = start_write_memory(file_base_address+`FILE_WR_PTR_OFFSET, wr_ptr, 4'hF);
+              if (active) begin
+                 write <=0;
+                 state <= STATE_WRITE_WR_PTR_DONE;
+              end
+           end
+
+           STATE_WRITE_WR_PTR_DONE: begin
               start <= 0;
               if (!active) begin
                  state <= STATE_IDLE;
@@ -246,6 +311,20 @@ module daq_sm (/*AUTOARG*/
        STATE_READ_WR_PTR_DONE:state_name     = "READ WR_PTR DONE";
        STATE_READ_CONTROL:     state_name     = "READ CONTROL";
        STATE_READ_CONTROL_DONE:state_name     = "READ CONTROL DONE";
+
+       STATE_WRITE_FILE_DATA:     state_name     = "WRITE DATA";
+       STATE_WRITE_FILE_DATA_DONE:state_name     = "WRITE DATA DONE";
+
+       STATE_WRITE_STATUS:     state_name     = "WRITE STATUS";
+       STATE_WRITE_STATUS_DONE:state_name     = "WRITE STATUS DONE";
+
+       STATE_WRITE_WR_PTR:     state_name     = "WRITE WR PTR";
+       STATE_WRITE_WR_PTR_DONE:state_name     = "WRITE WR PTR DONE";
+
+
+
+
+
        default:              state_name     = "DEFAULT";
      endcase // case (state)
 

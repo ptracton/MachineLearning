@@ -185,6 +185,11 @@ module dsp_tasks (/*AUTOARG*/ ) ;
       input [31:0] data;
       begin
          $display("DAQ WRITES FILE File = %d Data = 0x%x @ %d", file_num, data, $time);
+
+         if (`FILE_ACTIVE) begin
+            @(negedge `FILE_ACTIVE);
+         end
+
          @(posedge `WB_CLK);
 
          `FILE_NUM = file_num;

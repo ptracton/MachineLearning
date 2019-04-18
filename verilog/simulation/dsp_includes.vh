@@ -48,6 +48,7 @@
 `define FILE_READ   `TB.file_read
 `define FILE_WRITE_DATA   `TB.file_write_data
 `define FILE_READ_DATA   `TB.file_read_data
+`define FILE_ACTIVE   `TB.file_active
 
 `define RAM0        `TB.ram0
 `define RAM00       `RAM.ram0
@@ -110,11 +111,12 @@ This is a 32*8 = 256 bit structure
 `define FILE_RESERVED0_OFFSET     32'h0000_0018
 `define FILE_RESERVED1_OFFSET     32'h0000_001C
 
+`define F_STATUS_WRAP_AROUND      0
 
-`define WB_DSP_BASE_ADDRESS         32'h7000_0000
+`define WB_DSP_BASE_ADDRESS       32'h7000_0000
 
 
-`define WB_DAQ_BASE_ADDRESS        32'h8000_0000
+`define WB_DAQ_BASE_ADDRESS       32'h8000_0000
 
 
 

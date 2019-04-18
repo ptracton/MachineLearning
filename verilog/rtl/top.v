@@ -12,8 +12,8 @@
 
 module top (/*AUTOARG*/
    // Outputs
-   dtb_pad, file_read_data, daq_data_rd, daq_active, cpu_data_rd,
-   cpu_active,
+   dtb_pad, file_read_data, file_active, daq_data_rd, daq_active,
+   cpu_data_rd, cpu_active,
    // Inputs
    clk_pad_i, rst_pad_i, file_num, file_write, file_read,
    file_write_data, daq_address, daq_start, daq_selection, daq_write,
@@ -34,6 +34,7 @@ module top (/*AUTOARG*/
    input         file_read;
    input [31:0]  file_write_data;
    output [31:0] file_read_data;
+   output        file_active;
 
 
    input [aw-1:0]  daq_address;
@@ -88,6 +89,7 @@ module top (/*AUTOARG*/
                .file_read_data(file_read_data),
                .data_rd(daq_data_rd),
                .active(daq_active),
+               .file_active(file_active),
 
                .wb_s_dat_o(wb_s2m_daq_slave_dat),
                .wb_s_ack_o(wb_s2m_daq_slave_ack),

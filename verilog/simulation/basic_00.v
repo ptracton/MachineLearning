@@ -15,7 +15,7 @@ module test_case (/*AUTOARG*/ ) ;
    // These parameters need to be set for each test case
    //
    parameter simulation_name = "basic_00";
-   parameter number_of_tests = 8;
+   parameter number_of_tests = 64;
 
    reg  err;
    reg [31:0] data_out;
@@ -57,7 +57,27 @@ module test_case (/*AUTOARG*/ ) ;
 
       repeat (500) @(posedge `WB_CLK);
 
-      `DAQ_WRITES_FILE(0, 32'hdeadbeef);
+      for (i=0; i< 20; i=i+1) begin
+         `DAQ_WRITES_FILE(0, 32'hdead_0000+i);
+         `DAQ_WRITES_FILE(1, 32'hfeed_0000+i);
+         `DAQ_WRITES_FILE(2, 32'hbeef_0000+i);
+      end
+      //      `DAQ_WRITES_FILE(0, 32'hdead_beef);
+      //      `DAQ_WRITES_FILE(0, 32'h5555_aaaa);
+      //      `DAQ_WRITES_FILE(0, 32'hbbbb_6666);
+      //      `DAQ_WRITES_FILE(0, 32'h7777_cccc);
+
+      repeat (50) @(posedge `WB_CLK);
+      for (i=0; i< 20; i=i+1) begin
+         `CPU_READS(`WB_RAM1 + i*4,    4'hF, 32'hdead_0000+i, cpu_read);
+         `CPU_READS(`WB_RAM2 + i*4,    4'hF, 32'hfeed_0000+i, cpu_read);
+         `CPU_READS(`WB_RAM3 + i*4,    4'hF, 32'hbeef_0000+i, cpu_read);
+      end
+
+      //      `CPU_READS(`WB_RAM1,    4'hF, 32'hdead_beef, cpu_read);
+      //      `CPU_READS(`WB_RAM1+4,  4'hF, 32'h5555_aaaa, cpu_read);
+      //      `CPU_READS(`WB_RAM1+8,  4'hF, 32'hbbbb_6666, cpu_read);
+      //      `CPU_READS(`WB_RAM1+12, 4'hF, 32'h7777_cccc, cpu_read);
 
       repeat (50) @(posedge `WB_CLK);
       `TEST_COMPLETE;

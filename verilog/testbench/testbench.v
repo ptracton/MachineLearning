@@ -63,6 +63,7 @@ module testbench (/*AUTOARG*/ ) ;
    reg         file_read;
    reg [31:0]  file_write_data;
    wire [31:0] file_read_data;
+   wire        file_active;
 
    top dut(
            // Outputs
@@ -71,6 +72,7 @@ module testbench (/*AUTOARG*/ ) ;
            .daq_data_rd(daq_data_rd),
            .daq_active(daq_active),
 
+           .file_active(file_active),
 
            .cpu_data_rd(cpu_data_rd),
            .cpu_active(cpu_active),

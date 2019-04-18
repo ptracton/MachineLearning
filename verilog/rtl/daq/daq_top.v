@@ -12,7 +12,7 @@ module daq_top (/*AUTOARG*/
    // Outputs
    wb_m_adr_o, wb_m_dat_o, wb_m_sel_o, wb_m_we_o, wb_m_cyc_o,
    wb_m_stb_o, wb_m_cti_o, wb_m_bte_o, data_rd, active, wb_s_dat_o,
-   wb_s_ack_o, wb_s_err_o, wb_s_rty_o, file_read_data,
+   wb_s_ack_o, wb_s_err_o, wb_s_rty_o, file_read_data, file_active,
    // Inputs
    wb_clk, wb_rst, wb_m_dat_i, wb_m_ack_i, wb_m_err_i, wb_m_rty_i,
    start, address, selection, write, data_wr, wb_s_adr_i, wb_s_dat_i,
@@ -66,6 +66,7 @@ module daq_top (/*AUTOARG*/
    input                file_read;
    input [31:0]         file_write_data;
    output [31:0]        file_read_data;
+   output               file_active;
 
    wire                sm_start;
    wire [aw-1:0]       sm_address;
@@ -161,6 +162,8 @@ module daq_top (/*AUTOARG*/
                         .selection(sm_selection),
                         .write(sm_write),
                         .data_wr(sm_data_wr),
+                        .file_active(file_active),
+
                         // Inputs
                         .wb_clk(wb_clk),
                         .wb_rst(wb_rst),
