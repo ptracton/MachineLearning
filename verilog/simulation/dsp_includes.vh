@@ -94,6 +94,8 @@
      #define WRAP    0x00000004
      #define ERROR   0x00000008
  uint32_t control;         // offset 14
+     #define DATA_SIZE   00/11=32 bits, 01 is 8 bits, 10 is 16 bits
+
  uint32_t reserved0        // offset 18
  uint32_t reserved1        // offset 1C
  } FILE_TypeDef
@@ -112,6 +114,16 @@ This is a 32*8 = 256 bit structure
 `define FILE_RESERVED1_OFFSET     32'h0000_001C
 
 `define F_STATUS_WRAP_AROUND      0
+`define F_STATUS_FULL             1
+`define F_STATUS_WRAP             2
+`define F_STATUS_ERROR            3
+
+`define F_CONTROL_DATA_SIZE           1:0
+`define B_CONTROL_DATA_SIZE_WORD      2'b00
+`define B_CONTROL_DATA_SIZE_HWORD     2'b01
+`define B_CONTROL_DATA_SIZE_BYTE      2'b10
+`define B_CONTROL_DATA_SIZE_UNDEFINED 2'b11
+
 
 `define WB_DSP_BASE_ADDRESS       32'h7000_0000
 

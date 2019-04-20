@@ -73,6 +73,28 @@ module daq_sm (/*AUTOARG*/
    reg [31:0]          file_write_data_reg;
    reg [31:0]          status;
 
+   wire [1:0]          data_size = control[`F_CONTROL_DATA_SIZE];
+   wire [2:0]          data_size_increment = (data_size == `B_CONTROL_DATA_SIZE_WORD) ? 3'h4 :
+                       (data_size == `B_CONTROL_DATA_SIZE_HWORD) ? 3'h2 :
+                       (data_size == `B_CONTROL_DATA_SIZE_BYTE) ? 3'h1 :
+                       (data_size == `B_CONTROL_DATA_SIZE_UNDEFINED) ? 3'h0 : 3'h0;
+   wire [3:0]          data_selection = (data_size == `B_CONTROL_DATA_SIZE_WORD) ? 4'hF :
+                                        (data_size == `B_CONTROL_DATA_SIZE_HWORD) & wr_ptr[1]==0 ? 4'h3 :
+                                        (data_size == `B_CONTROL_DATA_SIZE_HWORD) & wr_ptr[1]==1? 4'hC :
+                                        (data_size == `B_CONTROL_DATA_SIZE_BYTE)  & wr_ptr[1:0] ==0 ? 4'h1 :
+                                        (data_size == `B_CONTROL_DATA_SIZE_BYTE)  & wr_ptr[1:0] ==1 ? 4'h2 :
+                                        (data_size == `B_CONTROL_DATA_SIZE_BYTE)  & wr_ptr[1:0] ==2 ? 4'h4 :
+                                        (data_size == `B_CONTROL_DATA_SIZE_BYTE)  & wr_ptr[1:0] ==3 ? 4'h8 :
+                                        (data_size == `B_CONTROL_DATA_SIZE_UNDEFINED) ? 3'h0 : 3'h0;
+
+   wire [31:0]         data_write = (data_selection == 4'hf) ? file_write_data_reg[31:0] :
+                       (data_selection == 4'hc) ? {file_write_data_reg[31:16], 16'b0} :
+                       (data_selection == 4'h3) ? {16'b0, file_write_data_reg[15:0]} :
+                       (data_selection == 4'h8) ? {file_write_data_reg[31:24], 24'b0} :
+                       (data_selection == 4'h4) ? {8'b0, file_write_data_reg[23:16], 16'b0} :
+                       (data_selection == 4'h2) ? {16'b0, file_write_data_reg[15:08], 8'b0} :
+                       (data_selection == 4'h1) ? {24'b0, file_write_data_reg[07:00]} : 0;
+
    reg                 srm;
 
    function start_read_memory;
@@ -119,6 +141,7 @@ module daq_sm (/*AUTOARG*/
          file_write_data_reg <= 0;
          status <= 0;
          file_active <=0;
+         srm = 0;
 
       end else begin
          case (state)
@@ -216,8 +239,8 @@ module daq_sm (/*AUTOARG*/
            STATE_READ_STATUS_DONE: begin
               start <= 0;
               if (!active) begin
-                 state <= STATE_WRITE_FILE_DATA;
-                 status <= data_wr;
+                 state <= STATE_READ_CONTROL;
+                 status <= data_rd;
               end
            end
 
@@ -232,17 +255,18 @@ module daq_sm (/*AUTOARG*/
               start <= 0;
               if (!active) begin
                  state <= STATE_WRITE_FILE_DATA;
-                 control <= data_wr;
+                 control <= data_rd;
               end
            end
 
            STATE_WRITE_FILE_DATA : begin
-              srm = start_write_memory(wr_ptr, file_write_data_reg, 4'hF);
+              // srm = start_write_memory(wr_ptr, file_write_data_reg, data_selection);
+              srm = start_write_memory(wr_ptr, data_write, data_selection);
               if (active) begin
                  write <=0;
                  state <= STATE_WRITE_FILE_DATA_DONE;
                  // increment pointer and deal with wrap around
-                 wr_ptr = wr_ptr + 4;
+                 wr_ptr = wr_ptr + data_size_increment;
                  if (wr_ptr > end_address) begin
                     wr_ptr = start_address;
                     status[`F_STATUS_WRAP_AROUND] = 1;
@@ -320,9 +344,6 @@ module daq_sm (/*AUTOARG*/
 
        STATE_WRITE_WR_PTR:     state_name     = "WRITE WR PTR";
        STATE_WRITE_WR_PTR_DONE:state_name     = "WRITE WR PTR DONE";
-
-
-
 
 
        default:              state_name     = "DEFAULT";
