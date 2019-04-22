@@ -66,11 +66,11 @@ module dsp_top (/*AUTOARG*/
    //
    // Read Only Registers
    //
-   wire [dw-1:0]        dsp_output0_reg = 32'h0123_4567;
-   wire [dw-1:0]        dsp_output1_reg = 32'h89ab_cdef;
-   wire [dw-1:0]        dsp_output2_reg = 32'h1122_3344;
-   wire [dw-1:0]        dsp_output3_reg = 32'h5566_7788;
-   wire [dw-1:0]        dsp_output4_reg = 32'h99aa_bbcc;
+   wire [dw-1:0]        dsp_output0_reg ; // 32'h0123_4567;
+   wire [dw-1:0]        dsp_output1_reg ; // 32'h89ab_cdef;
+   wire [dw-1:0]        dsp_output2_reg ; // 32'h1122_3344;
+   wire [dw-1:0]        dsp_output3_reg ; // 32'h5566_7788;
+   wire [dw-1:0]        dsp_output4_reg ; // 32'h99aa_bbcc;
 
    wb_master_interface master(
                               // Outputs
@@ -131,5 +131,31 @@ module dsp_top (/*AUTOARG*/
          .wb_cti_i(wb_s_cti_i),
          .wb_bte_i(wb_s_bte_i)
          ) ;
+
+   dsp_sm
+     sm(
+        // Outputs
+        .address(address),
+        .start(start),
+        .selection(selection),
+        .write(write),
+        .data_wr(data_wr),
+        .file_active(file_active),
+        .dsp_output0_reg(dsp_output0_reg),
+        .dsp_output1_reg(dsp_output1_reg),
+        .dsp_output2_reg(dsp_output2_reg),
+        .dsp_output3_reg(dsp_output3_reg),
+        .dsp_output4_reg(dsp_output4_reg),
+        // Inputs
+        .wb_clk(wb_clk),
+        .wb_rst(wb_rst),
+        .data_rd(data_rd),
+        .active(active),
+        .dsp_input0_reg(dsp_input0_reg),
+        .dsp_input1_reg(dsp_input1_reg),
+        .dsp_input2_reg(dsp_input2_reg),
+        .dsp_input3_reg(dsp_input3_reg),
+        .dsp_input4_reg(dsp_input4_reg)
+        ) ;
 
 endmodule // dsp_top

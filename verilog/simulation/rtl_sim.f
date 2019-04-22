@@ -16,6 +16,8 @@
       ../rtl/daq/daq_sm.v
       ../rtl/dsp/dsp_slave.v
       ../rtl/dsp/dsp_top.v
+      ../rtl/dsp/dsp_sm.v
+
       ../rtl/wb_master_interface/arbiter.v
       ../rtl/wb_master_interface/wb_master_interface.v
       ../rtl/bus_matrix/bus_matrix.v
