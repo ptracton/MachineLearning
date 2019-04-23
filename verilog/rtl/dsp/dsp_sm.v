@@ -12,12 +12,13 @@
 
 module dsp_sm (/*AUTOARG*/
    // Outputs
-   address, start, selection, write, data_wr, file_active,
-   dsp_output0_reg, dsp_output1_reg, dsp_output2_reg, dsp_output3_reg,
-   dsp_output4_reg,
+   file_read_data, address, start, selection, write, data_wr,
+   file_active, dsp_output0_reg, dsp_output1_reg, dsp_output2_reg,
+   dsp_output3_reg, dsp_output4_reg,
    // Inputs
-   wb_clk, wb_rst, data_rd, active, dsp_input0_reg, dsp_input1_reg,
-   dsp_input2_reg, dsp_input3_reg, dsp_input4_reg
+   wb_clk, wb_rst, file_num, file_write, file_read, file_write_data,
+   data_rd, active, dsp_input0_reg, dsp_input1_reg, dsp_input2_reg,
+   dsp_input3_reg, dsp_input4_reg
    ) ;
    parameter dw = 32;
    parameter aw = 32;
@@ -26,11 +27,11 @@ module dsp_sm (/*AUTOARG*/
    input wb_clk;
    input wb_rst;
 
-   // input [7:0] file_num;
-   // input       file_write;
-   // input       file_read;
-   // input [31:0] file_write_data;
-   // output reg [31:0] file_read_data;
+   input [7:0] file_num;
+   input       file_write;
+   input       file_read;
+   input [31:0] file_write_data;
+   output reg [31:0] file_read_data;
 
    output reg [aw-1:0] address;
    output reg          start;
@@ -59,12 +60,6 @@ module dsp_sm (/*AUTOARG*/
    output reg [dw-1:0] dsp_output2_reg;
    output reg [dw-1:0] dsp_output3_reg;
    output reg [dw-1:0] dsp_output4_reg;
-
-   wire [7:0]          file_num;
-   wire                file_write;
-   wire                file_read;
-   wire [31:0]         file_write_data;
-   reg [31:0]          file_read_data;
 
 
    reg [7:0]           state;

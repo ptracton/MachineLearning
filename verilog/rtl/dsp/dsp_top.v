@@ -158,4 +158,30 @@ module dsp_top (/*AUTOARG*/
         .dsp_input4_reg(dsp_input4_reg)
         ) ;
 
+
+   dsp_equations_top
+     equations(
+               // Outputs
+               .start(),
+               .file_num(),
+               .file_write(),
+               .file_read(),
+               .file_write_data(),
+               .dsp_output0_reg(dsp_output0_reg),
+               .dsp_output1_reg(dsp_output1_reg),
+               .dsp_output2_reg(dsp_output2_reg),
+               .dsp_output3_reg(dsp_output3_reg),
+               .dsp_output4_reg(dsp_output4_reg),
+               // Inputs
+               .wb_clk(),
+               .wb_rst(),
+               .dsp_input0_reg(dsp_input0_reg),
+               .dsp_input1_reg(dsp_input1_reg),
+               .dsp_input2_reg(dsp_input2_reg),
+               .dsp_input3_reg(dsp_input3_reg),
+               .dsp_input4_reg(dsp_input4_reg)
+               .file_read_data()
+               ) ;
+
+
 endmodule // dsp_top
