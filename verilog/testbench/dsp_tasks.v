@@ -100,7 +100,7 @@ module dsp_tasks (/*AUTOARG*/ ) ;
          address = address + 4;
          `CPU_WRITES(address, 4'hF, wr_ptr);
          address = address + 4;
-         `CPU_WRITES(address, 4'hF, 32'h0); //Status starts as a 0
+         `CPU_WRITES(address, 4'hF, 1<< `F_STATUS_EMPTY); //Status starts as empty
          address = address + 4;
          `CPU_WRITES(address, 4'hF, control);
          address = address + 4;

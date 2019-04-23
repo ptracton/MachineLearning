@@ -115,8 +115,9 @@ This is a 32*8 = 256 bit structure
 
 `define F_STATUS_WRAP_AROUND      0
 `define F_STATUS_FULL             1
-`define F_STATUS_WRAP             2
-`define F_STATUS_ERROR            3
+`define F_STATUS_EMPTY            2
+`define F_STATUS_WRAP             3
+`define F_STATUS_ERROR            4
 
 `define F_CONTROL_DATA_SIZE           1:0
 `define B_CONTROL_DATA_SIZE_WORD      2'b00

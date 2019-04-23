@@ -73,6 +73,10 @@ module daq_sm (/*AUTOARG*/
    reg [31:0]          file_write_data_reg;
    reg [31:0]          status;
 
+   wire [31:0]         data_max_samples = (end_address - start_address)  >> (data_size_increment >> 1);
+   wire [31:0]         data_samples = ((wr_ptr >rd_ptr) ? (wr_ptr - rd_ptr) : (rd_ptr - wr_ptr)) >> (data_size_increment >> 1);
+
+
    wire [1:0]          data_size = control[`F_CONTROL_DATA_SIZE];
    wire [2:0]          data_size_increment = (data_size == `B_CONTROL_DATA_SIZE_WORD) ? 3'h4 :
                        (data_size == `B_CONTROL_DATA_SIZE_HWORD) ? 3'h2 :
@@ -271,8 +275,21 @@ module daq_sm (/*AUTOARG*/
                     wr_ptr = start_address;
                     status[`F_STATUS_WRAP_AROUND] = 1;
                  end
+
+                 if (data_samples == data_max_samples) begin
+                    status[`F_STATUS_FULL] = 1;
+                 end else begin
+                    status[`F_STATUS_FULL] = 0;
+                 end
+
+                 if (data_samples == 0) begin
+                    status[`F_STATUS_EMPTY] = 1;
+                 end else begin
+                    status[`F_STATUS_EMPTY] = 0;
+                 end
               end
-           end
+           end // case: STATE_WRITE_FILE_DATA
+
 
 
            STATE_WRITE_FILE_DATA_DONE: begin
