@@ -38,13 +38,13 @@ module test_case (/*AUTOARG*/ ) ;
 
       // File 1 is input data to sum
       //                    FILE  START    END             RD        WR        CONTROL
-      `CPU_WRITE_FILE_CONFIG(1, `WB_RAM2, `WB_RAM2+(4*5), `WB_RAM2, `WB_RAM2, `B_CONTROL_DATA_SIZE_WORD);
+      `CPU_WRITE_FILE_CONFIG(1, `WB_RAM2, `WB_RAM2+(4*8), `WB_RAM2, `WB_RAM2, `B_CONTROL_DATA_SIZE_WORD);
       // File 2 is the output file
-      `CPU_WRITE_FILE_CONFIG(2, `WB_RAM3, `WB_RAM3+(4*5), `WB_RAM3, `WB_RAM3, `B_CONTROL_DATA_SIZE_WORD);
+      `CPU_WRITE_FILE_CONFIG(2, `WB_RAM3, `WB_RAM3+(4*8), `WB_RAM3, `WB_RAM3, `B_CONTROL_DATA_SIZE_WORD);
 
       repeat (500) @(posedge `WB_CLK);
 
-      $display("\n\nLoading 16 bit data via DAQ @d", $time);
+      $display("\n\nLoading 32 bit data via DAQ @d", $time);
       for (i=0; i< 5; i=i+1) begin
          `DAQ_WRITES_FILE(1,  32'h0+i);  //16 bit writes
       end
@@ -61,6 +61,14 @@ module test_case (/*AUTOARG*/ ) ;
       `CPU_WRITES(`WB_DSP_SLAVE_BASE_ADDRESS+`WB_DSP_SLAVE_INPUT0_OFFSET,   4'hF, input0);
 
       repeat (2000) @(posedge `WB_CLK);
+
+      $display("\n\nLoading 32 bit data via DAQ @d", $time);
+      for (i=20; i< 25; i=i+1) begin
+         `DAQ_WRITES_FILE(1,  32'h0+i);  //16 bit writes
+      end
+      `CPU_WRITES(`WB_DSP_SLAVE_BASE_ADDRESS+`WB_DSP_SLAVE_INPUT0_OFFSET,   4'hF, input0);
+      repeat (2000) @(posedge `WB_CLK);
+
       `TEST_COMPLETE;
    end
 
