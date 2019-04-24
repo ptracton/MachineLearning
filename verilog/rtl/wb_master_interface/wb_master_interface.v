@@ -46,7 +46,7 @@ module wb_master_interface (/*AUTOARG*/
    output reg [dw-1:0] data_rd;
    output wire         active;
 
-   reg [dw-1:0]        data_reg;
+//   reg [dw-1:0]        data_reg;
 
    reg [1:0]           state;
    parameter STATE_IDLE         = 2'h0;

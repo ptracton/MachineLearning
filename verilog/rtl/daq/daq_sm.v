@@ -73,9 +73,6 @@ module daq_sm (/*AUTOARG*/
    reg [31:0]          file_write_data_reg;
    reg [31:0]          status;
 
-   wire [31:0]         data_max_samples = (end_address - start_address)  >> (data_size_increment >> 1);
-   wire [31:0]         data_samples = ((wr_ptr >rd_ptr) ? (wr_ptr - rd_ptr) : (rd_ptr - wr_ptr)) >> (data_size_increment >> 1);
-
 
    wire [1:0]          data_size = control[`F_CONTROL_DATA_SIZE];
    wire [2:0]          data_size_increment = (data_size == `B_CONTROL_DATA_SIZE_WORD) ? 3'h4 :
@@ -98,6 +95,9 @@ module daq_sm (/*AUTOARG*/
                        (data_selection == 4'h4) ? {8'b0, file_write_data_reg[23:16], 16'b0} :
                        (data_selection == 4'h2) ? {16'b0, file_write_data_reg[15:08], 8'b0} :
                        (data_selection == 4'h1) ? {24'b0, file_write_data_reg[07:00]} : 0;
+
+   wire [31:0]         data_max_samples = (end_address - start_address)  >> (data_size_increment >> 1);
+   wire [31:0]         data_samples = ((wr_ptr >rd_ptr) ? (wr_ptr - rd_ptr) : (rd_ptr - wr_ptr)) >> (data_size_increment >> 1);
 
    reg                 srm;
 

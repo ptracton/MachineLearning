@@ -17,9 +17,10 @@ module dsp_slave (/*AUTOARG*/
    wb_dat_o, wb_ack_o, wb_err_o, wb_rty_o, dsp_input0_reg,
    dsp_input1_reg, dsp_input2_reg, dsp_input3_reg, dsp_input4_reg,
    // Inputs
-   wb_clk, wb_rst, wb_adr_i, wb_dat_i, wb_sel_i, wb_we_i, wb_cyc_i,
-   wb_stb_i, wb_cti_i, wb_bte_i, dsp_output0_reg, dsp_output1_reg,
-   dsp_output2_reg, dsp_output3_reg, dsp_output4_reg
+   wb_clk, wb_rst, start, wb_adr_i, wb_dat_i, wb_sel_i, wb_we_i,
+   wb_cyc_i, wb_stb_i, wb_cti_i, wb_bte_i, dsp_output0_reg,
+   dsp_output1_reg, dsp_output2_reg, dsp_output3_reg, dsp_output4_reg,
+   done
    ) ;
 
    parameter SLAVE_ADDRESS = 32'h0000_0000;
@@ -29,6 +30,7 @@ module dsp_slave (/*AUTOARG*/
 
    input wb_clk;
    input wb_rst;
+   input start;
 
    input wire [aw-1:0] wb_adr_i;
    input wire [dw-1:0] wb_dat_i;
@@ -61,6 +63,7 @@ module dsp_slave (/*AUTOARG*/
    input [dw-1:0]      dsp_output2_reg;
    input [dw-1:0]      dsp_output3_reg;
    input [dw-1:0]      dsp_output4_reg;
+   input               done;
 
    wire                write_registers = wb_cyc_i & wb_stb_i & wb_we_i;
    wire                read_registers = wb_cyc_i & wb_stb_i;
@@ -135,7 +138,12 @@ module dsp_slave (/*AUTOARG*/
              end
            endcase // case (wb_adr_i[7:0])
 
-        end
+        end else begin // if (write_registers)
+           if (dsp_input0_reg[`F_DSP_SLAVE_EQUATION_START] ) begin
+              // Auto clear this bit
+              dsp_input0_reg[`F_DSP_SLAVE_EQUATION_START] <= 1'b0;
+           end
+        end // else: !if(write_registers)
      end // else: !if(wb_rst)
 
 

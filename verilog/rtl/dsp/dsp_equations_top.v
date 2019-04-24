@@ -12,11 +12,12 @@
 module dsp_equations_top (/*AUTOARG*/
    // Outputs
    dsp_output0_reg, dsp_output1_reg, dsp_output2_reg, dsp_output3_reg,
-   dsp_output4_reg, start, file_num, file_write, file_read,
+   dsp_output4_reg, done, file_num, file_write, file_read,
    file_write_data,
    // Inputs
-   wb_clk, wb_rst, dsp_input0_reg, dsp_input1_reg, dsp_input2_reg,
-   dsp_input3_reg, dsp_input4_reg, file_read_data, file_active
+   wb_clk, wb_rst, rd_ptr, wr_ptr, dsp_input0_reg, dsp_input1_reg,
+   dsp_input2_reg, dsp_input3_reg, dsp_input4_reg, file_read_data,
+   file_active
    ) ;
 
    parameter dw = 32;
@@ -25,6 +26,8 @@ module dsp_equations_top (/*AUTOARG*/
 
    input wb_clk;
    input wb_rst;
+   input [31:0] rd_ptr;
+   input [31:0] wr_ptr;
 
    input [dw-1:0] dsp_input0_reg;
    input [dw-1:0] dsp_input1_reg;
@@ -37,8 +40,7 @@ module dsp_equations_top (/*AUTOARG*/
    output wire [dw-1:0] dsp_output2_reg;
    output wire [dw-1:0] dsp_output3_reg;
    output wire [dw-1:0] dsp_output4_reg;
-
-   output reg       start;
+   output wire          done;
 
    output wire [7:0] file_num;
    output wire       file_write;
@@ -57,10 +59,14 @@ module dsp_equations_top (/*AUTOARG*/
          .file_write(file_write),
          .file_read(file_read),
          .file_write_data(file_write_data),
+         .equation_done(done),
+         .dsp_output0_reg(dsp_output0_reg),
 
          // Inputs
          .wb_clk(wb_clk),
          .wb_rst(wb_rst),
+         .rd_ptr(rd_ptr),
+         .wr_ptr(wr_ptr),
          .dsp_input0_reg(dsp_input0_reg),
          .dsp_input1_reg(dsp_input1_reg),
          .dsp_input3_reg(dsp_input3_reg),

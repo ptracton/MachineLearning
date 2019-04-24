@@ -60,6 +60,8 @@ module dsp_top (/*AUTOARG*/
    wire [31:0]          file_write_data;
    wire [31:0]          file_read_data;
    wire                 start;
+   wire [31:0]          rd_ptr;
+   wire [31:0]          wr_ptr;
 
    //
    // Read Write Registers
@@ -128,6 +130,8 @@ module dsp_top (/*AUTOARG*/
          .dsp_input4_reg(dsp_input4_reg),
 
          // Inputs
+         .start(start),
+         .done(done),
          .dsp_output0_reg(dsp_output0_reg),
          .dsp_output1_reg(dsp_output1_reg),
          .dsp_output2_reg(dsp_output2_reg),
@@ -159,6 +163,8 @@ module dsp_top (/*AUTOARG*/
         .dsp_output2_reg(dsp_output2_reg),
         .dsp_output3_reg(dsp_output3_reg),
         .dsp_output4_reg(dsp_output4_reg),
+        .rd_ptr(rd_ptr),
+        .wr_ptr(wr_ptr),
         // Inputs
         .wb_clk(wb_clk),
         .wb_rst(wb_rst),
@@ -180,7 +186,6 @@ module dsp_top (/*AUTOARG*/
    dsp_equations_top
      equations(
                // Outputs
-               .start(start),
                .file_num(file_num),
                .file_write(file_write),
                .file_read(file_read),
@@ -190,9 +195,13 @@ module dsp_top (/*AUTOARG*/
                .dsp_output2_reg(dsp_output2_reg),
                .dsp_output3_reg(dsp_output3_reg),
                .dsp_output4_reg(dsp_output4_reg),
+               .done(done),
+
                // Inputs
                .wb_clk(wb_clk),
                .wb_rst(wb_rst),
+               .rd_ptr(rd_ptr),
+               .wr_ptr(wr_ptr),
                .file_active(file_active),
                .dsp_input0_reg(dsp_input0_reg),
                .dsp_input1_reg(dsp_input1_reg),

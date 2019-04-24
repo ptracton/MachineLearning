@@ -14,7 +14,7 @@ module dsp_sm (/*AUTOARG*/
    // Outputs
    file_read_data, address, start, selection, write, data_wr,
    file_active, dsp_output0_reg, dsp_output1_reg, dsp_output2_reg,
-   dsp_output3_reg, dsp_output4_reg,
+   dsp_output3_reg, dsp_output4_reg, rd_ptr, wr_ptr,
    // Inputs
    wb_clk, wb_rst, file_num, file_write, file_read, file_write_data,
    data_rd, active, dsp_input0_reg, dsp_input1_reg, dsp_input2_reg,
@@ -86,8 +86,8 @@ module dsp_sm (/*AUTOARG*/
    reg [31:0]          file_base_address;
    reg [31:0]          start_address;
    reg [31:0]          end_address;
-   reg [31:0]          rd_ptr;
-   reg [31:0]          wr_ptr;
+   output reg [31:0]   rd_ptr;
+   output reg [31:0]   wr_ptr;
    reg [31:0]          control;
    reg [31:0]          file_write_data_reg;
    reg [31:0]          status;
@@ -284,7 +284,7 @@ module dsp_sm (/*AUTOARG*/
 
            STATE_READ_FILE_DATA : begin
               // srm = start_write_memory(wr_ptr, file_write_data_reg, data_selection);
-              srm = start_write_memory(wr_ptr, data_write, data_selection);
+              srm = start_read_memory(rd_ptr, data_selection);
               if (active) begin
                  write <=0;
                  state <= STATE_READ_FILE_DATA_DONE;
@@ -302,6 +302,7 @@ module dsp_sm (/*AUTOARG*/
               start <= 0;
               if (!active) begin
                  state <= STATE_WRITE_STATUS;
+                 file_read_data <= data_rd;
               end
            end
 
@@ -357,6 +358,8 @@ module dsp_sm (/*AUTOARG*/
        STATE_READ_RD_PTR_DONE:state_name     = "READ RD_PTR DONE";
        STATE_READ_WR_PTR:     state_name     = "READ WR_PTR";
        STATE_READ_WR_PTR_DONE:state_name     = "READ WR_PTR DONE";
+       STATE_READ_STATUS:     state_name     = "READ STATUS";
+       STATE_READ_STATUS_DONE:state_name     = "READ STATUS DONE";
        STATE_READ_CONTROL:     state_name     = "READ CONTROL";
        STATE_READ_CONTROL_DONE:state_name     = "READ CONTROL DONE";
 
