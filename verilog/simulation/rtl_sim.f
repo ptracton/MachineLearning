@@ -17,6 +17,8 @@
       ../rtl/dsp/dsp_slave.v
       ../rtl/dsp/dsp_top.v
       ../rtl/dsp/dsp_sm.v
+      ../rtl/dsp/dsp_equations_top.v
+      ../rtl/dsp/dsp_equation_sum.v
 
       ../rtl/wb_master_interface/arbiter.v
       ../rtl/wb_master_interface/wb_master_interface.v

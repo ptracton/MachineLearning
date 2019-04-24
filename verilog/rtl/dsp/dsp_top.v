@@ -54,6 +54,13 @@ module dsp_top (/*AUTOARG*/
    output wire          wb_s_err_o;
    output wire          wb_s_rty_o;
 
+   wire [7:0]           file_num;
+   wire                 file_write;
+   wire                 file_read;
+   wire [31:0]          file_write_data;
+   wire [31:0]          file_read_data;
+   wire                 start;
+
    //
    // Read Write Registers
    //
@@ -71,6 +78,12 @@ module dsp_top (/*AUTOARG*/
    wire [dw-1:0]        dsp_output2_reg ; // 32'h1122_3344;
    wire [dw-1:0]        dsp_output3_reg ; // 32'h5566_7788;
    wire [dw-1:0]        dsp_output4_reg ; // 32'h99aa_bbcc;
+
+   wire [31:0]          data_rd;
+   wire [31:0]          address;
+   wire [3:0]           selection;
+   wire [31:0]          data_wr;
+
 
    wb_master_interface master(
                               // Outputs
@@ -151,6 +164,11 @@ module dsp_top (/*AUTOARG*/
         .wb_rst(wb_rst),
         .data_rd(data_rd),
         .active(active),
+        .file_num(file_num),
+        .file_write(file_write),
+        .file_read(file_read),
+        .file_write_data(file_write_data),
+        .file_read_data(file_read_data),
         .dsp_input0_reg(dsp_input0_reg),
         .dsp_input1_reg(dsp_input1_reg),
         .dsp_input2_reg(dsp_input2_reg),
@@ -162,25 +180,26 @@ module dsp_top (/*AUTOARG*/
    dsp_equations_top
      equations(
                // Outputs
-               .start(),
-               .file_num(),
-               .file_write(),
-               .file_read(),
-               .file_write_data(),
+               .start(start),
+               .file_num(file_num),
+               .file_write(file_write),
+               .file_read(file_read),
+               .file_write_data(file_write_data),
                .dsp_output0_reg(dsp_output0_reg),
                .dsp_output1_reg(dsp_output1_reg),
                .dsp_output2_reg(dsp_output2_reg),
                .dsp_output3_reg(dsp_output3_reg),
                .dsp_output4_reg(dsp_output4_reg),
                // Inputs
-               .wb_clk(),
-               .wb_rst(),
+               .wb_clk(wb_clk),
+               .wb_rst(wb_rst),
+               .file_active(file_active),
                .dsp_input0_reg(dsp_input0_reg),
                .dsp_input1_reg(dsp_input1_reg),
                .dsp_input2_reg(dsp_input2_reg),
                .dsp_input3_reg(dsp_input3_reg),
-               .dsp_input4_reg(dsp_input4_reg)
-               .file_read_data()
+               .dsp_input4_reg(dsp_input4_reg),
+               .file_read_data(file_read_data)
                ) ;
 
 

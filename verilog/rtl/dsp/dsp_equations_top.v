@@ -16,7 +16,7 @@ module dsp_equations_top (/*AUTOARG*/
    file_write_data,
    // Inputs
    wb_clk, wb_rst, dsp_input0_reg, dsp_input1_reg, dsp_input2_reg,
-   dsp_input3_reg, dsp_input4_reg, file_read_data
+   dsp_input3_reg, dsp_input4_reg, file_read_data, file_active
    ) ;
 
    parameter dw = 32;
@@ -32,37 +32,40 @@ module dsp_equations_top (/*AUTOARG*/
    input [dw-1:0] dsp_input3_reg;
    input [dw-1:0] dsp_input4_reg;
 
-   output reg [dw-1:0] dsp_output0_reg;
-   output reg [dw-1:0] dsp_output1_reg;
-   output reg [dw-1:0] dsp_output2_reg;
-   output reg [dw-1:0] dsp_output3_reg;
-   output reg [dw-1:0] dsp_output4_reg;
+   output wire [dw-1:0] dsp_output0_reg;
+   output wire [dw-1:0] dsp_output1_reg;
+   output wire [dw-1:0] dsp_output2_reg;
+   output wire [dw-1:0] dsp_output3_reg;
+   output wire [dw-1:0] dsp_output4_reg;
 
    output reg       start;
 
-   output reg [7:0] file_num;
-   output reg       file_write;
-   output reg       file_read;
-   output reg [31:0] file_write_data;
+   output wire [7:0] file_num;
+   output wire       file_write;
+   output wire       file_read;
+   output wire [31:0] file_write_data;
    input [31:0]      file_read_data;
+   input             file_active;
 
 
    dsp_equation_sum
      sum(
          // Outputs
-         .dsp_output0_reg(),
-         .dsp_output1_reg(),
-         .dsp_output2_reg(),
-         .dsp_output3_reg(),
-         .dsp_output4_reg(),
+         .interrupt(interrupt),
+         .error(error),
+         .file_num(file_num),
+         .file_write(file_write),
+         .file_read(file_read),
+         .file_write_data(file_write_data),
+
          // Inputs
          .wb_clk(wb_clk),
          .wb_rst(wb_rst),
-         .dsp_input0_reg(),
-         .dsp_input1_reg(),
-         .dsp_input2_reg(),
-         .dsp_input3_reg(),
-         .dsp_input4_reg()
+         .dsp_input0_reg(dsp_input0_reg),
+         .dsp_input1_reg(dsp_input1_reg),
+         .dsp_input3_reg(dsp_input3_reg),
+         .file_read_data(file_read_data),
+         .file_active(file_active)
          ) ;
 
 endmodule // dsp_equations_top
