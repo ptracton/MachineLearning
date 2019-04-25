@@ -48,23 +48,65 @@ module dsp_equations_top (/*AUTOARG*/
    output wire [31:0] file_write_data;
    input [31:0]      file_read_data;
    input             file_active;
+   wire              interrupt;
+   wire              error;
 
+   wire              interrupt_sum;
+   wire              error_sum;
+   wire [7:0]        file_num_sum;
+   wire              file_write_sum;
+   wire              file_read_sum;
+   wire [31:0]       file_write_data_sum;
+   wire              done_sum;
+
+   wire              interrupt_multiply;
+   wire              error_multiply;
+   wire [7:0]        file_num_multiply;
+   wire              file_write_multiply;
+   wire              file_read_multiply;
+   wire [31:0]       file_write_data_multiply;
+   wire              done_multiply;
+
+   wire  equation_enable_sum = (dsp_input0_reg[`F_DSP_SLAVE_EQUATION_NUMBER] == `B_DSP_EQUATION_SUM);
+   wire  equation_enable_multiply = (dsp_input0_reg[`F_DSP_SLAVE_EQUATION_NUMBER] == `B_DSP_EQUATION_MULTIPLY);
+
+   assign interrupt = (equation_enable_sum) ? interrupt_sum :
+                      (equation_enable_multiply) ? interrupt_multiply : 0;
+
+   assign error = (equation_enable_sum) ? error_sum :
+                  (equation_enable_multiply) ? error_multiply : 0;
+
+   assign file_num = (equation_enable_sum) ? file_num_sum :
+                     (equation_enable_multiply) ? file_num_multiply : 0;
+
+   assign file_write = (equation_enable_sum) ? file_write_sum :
+                       (equation_enable_multiply) ? file_write_multiply : 0;
+
+   assign file_read = (equation_enable_sum) ? file_read_sum :
+                      (equation_enable_multiply) ? file_read_multiply : 0;
+
+   assign file_write_data = (equation_enable_sum) ? file_write_data_sum :
+                            (equation_enable_multiply) ? file_write_data_multiply : 0;
+
+   assign done = (equation_enable_sum) ? done_sum :
+                 (equation_enable_multiply) ? done_multiply : 0;
 
    dsp_equation_sum
      sum(
          // Outputs
-         .interrupt(interrupt),
-         .error(error),
-         .file_num(file_num),
-         .file_write(file_write),
-         .file_read(file_read),
-         .file_write_data(file_write_data),
-         .equation_done(done),
+         .interrupt(interrupt_sum),
+         .error(error_sum),
+         .file_num(file_num_sum),
+         .file_write(file_write_sum),
+         .file_read(file_read_sum),
+         .file_write_data(file_write_data_sum),
+         .equation_done(done_sum),
          .dsp_output0_reg(dsp_output0_reg),
 
          // Inputs
          .wb_clk(wb_clk),
          .wb_rst(wb_rst),
+         .equation_enable(equation_enable_sum),
          .rd_ptr(rd_ptr),
          .wr_ptr(wr_ptr),
          .dsp_input0_reg(dsp_input0_reg),
@@ -73,5 +115,33 @@ module dsp_equations_top (/*AUTOARG*/
          .file_read_data(file_read_data),
          .file_active(file_active)
          ) ;
+
+
+   dsp_equation_multiply
+     multiply (
+               // Outputs
+               .interrupt(interrupt_multiply),
+               .error(error_multiply),
+               .file_num(file_num_multiply),
+               .file_write(file_write_multiply),
+               .file_read(file_read_multiply),
+               .file_write_data(file_write_data_multiply),
+               .equation_done(done_multiply),
+               .dsp_output0_reg(dsp_output0_reg),
+               .dsp_output1_reg(dsp_output1_reg),
+               // Inputs
+               .wb_clk(wb_clk),
+               .wb_rst(wb_rst),
+               .equation_enable(equation_enable_multiply),
+               .dsp_input0_reg(dsp_input0_reg),
+               .dsp_input1_reg(dsp_input1_reg),
+               .dsp_input2_reg(dsp_input2_reg),
+               .dsp_input3_reg(dsp_input3_reg),
+               .file_read_data(file_read_data),
+               .file_active(file_active),
+               .rd_ptr(rd_ptr),
+               .wr_ptr(wr_ptr)
+               );
+
 
 endmodule // dsp_equations_top

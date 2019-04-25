@@ -131,12 +131,13 @@ This is a 32*8 = 256 bit structure
 `define WB_DSP_SLAVE_INPUT0_OFFSET      8'h00
 `define F_DSP_SLAVE_EQUATION_NUMBER     7:0
 `define B_DSP_EQUATION_SUM              8'h00
-`define B_DSP_EQUATION_MULT             8'h01
+`define B_DSP_EQUATION_MULTIPLY         8'h01
 `define B_DSP_EQUATION_DTREE            8'h02
-
 
 `define F_DSP_SLAVE_DATA_SIZE           9:8
 `define F_DSP_SLAVE_DATA_SIGNED         10
+`define F_DSP_SLAVE_ENABLE_MAC          11
+`define F_DSP_SLAVE_SCALAR_MULTIPLY     12
 `define F_DSP_SLAVE_EQUATION_START      31
 
 `define WB_DSP_SLAVE_INPUT1_OFFSET      8'h04

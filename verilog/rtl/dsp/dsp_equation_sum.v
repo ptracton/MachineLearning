@@ -12,8 +12,8 @@ module dsp_equation_sum (/*AUTOARG*/
    interrupt, error, file_num, file_write, file_read, file_write_data,
    equation_done, dsp_output0_reg,
    // Inputs
-   wb_clk, wb_rst, dsp_input0_reg, dsp_input1_reg, dsp_input3_reg,
-   file_read_data, file_active, rd_ptr, wr_ptr
+   wb_clk, wb_rst, equation_enable, dsp_input0_reg, dsp_input1_reg,
+   dsp_input3_reg, file_read_data, file_active, rd_ptr, wr_ptr
    ) ;
 
    parameter dw = 32;
@@ -22,6 +22,8 @@ module dsp_equation_sum (/*AUTOARG*/
 
    input wb_clk;
    input wb_rst;
+   input equation_enable;
+
    output reg interrupt;
    output reg error;
 
@@ -48,15 +50,13 @@ module dsp_equation_sum (/*AUTOARG*/
    localparam STATE_OPERATION               = 8'h03;
    localparam STATE_WRITE_READ_FILE         = 8'h04;
    localparam STATE_WRITE_READ_FILE_DONE    = 8'h05;
-   localparam STATE_READ_OUTPUT_FILE        = 8'h06;
-   localparam STATE_READ_OUTPUT_FILE_DONE   = 8'h07;
-   localparam STATE_WRITE_RESULTS_FILE      = 8'h08;
-   localparam STATE_WRITE_RESULTS_FILE_DONE = 8'h09;
+   localparam STATE_WRITE_RESULTS_FILE      = 8'h06;
+   localparam STATE_WRITE_RESULTS_FILE_DONE = 8'h07;
 
    reg [7:0]     state;
 
 
-   wire  equation_start = dsp_input0_reg[`F_DSP_SLAVE_EQUATION_START];
+   wire  equation_start = dsp_input0_reg[`F_DSP_SLAVE_EQUATION_START] & equation_enable;
    wire [1:0] data_size =dsp_input0_reg[`F_DSP_SLAVE_DATA_SIZE];
    wire       data_signed =dsp_input0_reg[`F_DSP_SLAVE_DATA_SIGNED] ;
 
