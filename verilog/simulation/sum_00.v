@@ -15,7 +15,7 @@ module test_case (/*AUTOARG*/ ) ;
    // These parameters need to be set for each test case
    //
    parameter simulation_name = "sum_00";
-   parameter number_of_tests = 89;
+   parameter number_of_tests = 2;
 
    integer i;
    reg [31:0] input0;
@@ -68,6 +68,10 @@ module test_case (/*AUTOARG*/ ) ;
       end
       `CPU_WRITES(`WB_DSP_SLAVE_BASE_ADDRESS+`WB_DSP_SLAVE_INPUT0_OFFSET,   4'hF, input0);
       repeat (2000) @(posedge `WB_CLK);
+
+      `CPU_READS(`WB_RAM3, 4'hF, 32'h0000_000a, cpu_read);
+      `CPU_READS(`WB_RAM3+4, 4'hF, 32'h0000_006e, cpu_read);
+
 
       `TEST_COMPLETE;
    end

@@ -78,10 +78,14 @@ module dsp_sm (/*AUTOARG*/
    localparam STATE_READ_CONTROL_DONE = 8'h0C;
    localparam STATE_READ_FILE_DATA       = 8'h0D;
    localparam STATE_READ_FILE_DATA_DONE  = 8'h0E;
-   localparam STATE_WRITE_STATUS         = 8'h0F;
-   localparam STATE_WRITE_STATUS_DONE    = 8'h10;
-   localparam STATE_WRITE_RD_PTR         = 8'h11;
-   localparam STATE_WRITE_RD_PTR_DONE    = 8'h12;
+   localparam STATE_WRITE_FILE_DATA       = 8'h0F;
+   localparam STATE_WRITE_FILE_DATA_DONE  = 8'h10;
+   localparam STATE_WRITE_STATUS         = 8'h11;
+   localparam STATE_WRITE_STATUS_DONE    = 8'h12;
+   localparam STATE_WRITE_RD_PTR         = 8'h13;
+   localparam STATE_WRITE_RD_PTR_DONE    = 8'h14;
+   localparam STATE_WRITE_WR_PTR         = 8'h15;
+   localparam STATE_WRITE_WR_PTR_DONE    = 8'h16;
 
    reg [31:0]          file_base_address;
    reg [31:0]          start_address;
@@ -115,6 +119,7 @@ module dsp_sm (/*AUTOARG*/
                        (data_selection == 4'h1) ? {24'b0, file_write_data_reg[07:00]} : 0;
 
    reg                 srm;
+   reg                 read_not_write;
 
    function start_read_memory;
       input [31:0]     srm_address;
@@ -165,6 +170,7 @@ module dsp_sm (/*AUTOARG*/
          dsp_output2_reg <= 0;
          dsp_output3_reg <= 0;
          dsp_output4_reg <= 0;
+         read_not_write <= 0;
 
       end else begin
          case (state)
@@ -176,6 +182,7 @@ module dsp_sm (/*AUTOARG*/
               write <=0;
               data_wr <=0;
               file_active <= 0;
+              read_not_write <= 0;
 
               // Don't clear these in case ew do another of the same file and we can skip stuff
               // file_base_address <= 0;
@@ -185,6 +192,7 @@ module dsp_sm (/*AUTOARG*/
               // wr_ptr <=0;
               // control <=0;
               if (file_read | file_write) begin
+                 read_not_write <= file_read;
                  file_active <= 1;
                  state <= STATE_READ_START;
                  file_base_address <= `WB_RAM0 + 'h20*file_num;
@@ -277,7 +285,11 @@ module dsp_sm (/*AUTOARG*/
            STATE_READ_CONTROL_DONE: begin
               start <= 0;
               if (!active) begin
-                 state <= STATE_READ_FILE_DATA;
+                 if (read_not_write) begin
+                    state <= STATE_READ_FILE_DATA;
+                 end else begin
+                    state <= STATE_WRITE_FILE_DATA;
+                 end
                  control <= data_rd;
               end
            end
@@ -306,6 +318,29 @@ module dsp_sm (/*AUTOARG*/
               end
            end
 
+           STATE_WRITE_FILE_DATA : begin
+              // srm = start_write_memory(wr_ptr, file_write_data_reg, data_selection);
+              srm = start_write_memory(wr_ptr, file_write_data_reg, data_selection);
+              if (active) begin
+                 write <=0;
+                 state <= STATE_WRITE_FILE_DATA_DONE;
+                 // increment pointer and deal with wrap around
+                 wr_ptr = wr_ptr + data_size_increment;
+                 if (wr_ptr > end_address) begin
+                    wr_ptr = start_address;
+                    status[`F_STATUS_WRAP_AROUND] = 1;
+                 end
+              end
+           end // case: STATE_WRITE_FILE_DATA
+
+
+           STATE_WRITE_FILE_DATA_DONE: begin
+              start <= 0;
+              if (!active) begin
+                 state <= STATE_WRITE_STATUS;
+              end
+           end
+
            STATE_WRITE_STATUS : begin
               srm = start_write_memory(file_base_address+`FILE_STATUS_OFFSET, status, 4'hF);
               if (active) begin
@@ -317,7 +352,11 @@ module dsp_sm (/*AUTOARG*/
            STATE_WRITE_STATUS_DONE: begin
               start <= 0;
               if (!active) begin
-                 state <= STATE_WRITE_RD_PTR;
+                 if (read_not_write) begin
+                    state <= STATE_WRITE_RD_PTR;
+                 end else begin
+                    state <= STATE_WRITE_WR_PTR;
+                 end
               end
            end
 
@@ -329,7 +368,22 @@ module dsp_sm (/*AUTOARG*/
               end
            end
 
-           STATE_WRITE_RD_PTR_DONE: begin
+           STATE_WRITE_WR_PTR_DONE: begin
+              start <= 0;
+              if (!active) begin
+                 state <= STATE_IDLE;
+              end
+           end
+
+           STATE_WRITE_WR_PTR : begin
+              srm = start_write_memory(file_base_address+`FILE_WR_PTR_OFFSET, wr_ptr, 4'hF);
+              if (active) begin
+                 write <=0;
+                 state <= STATE_WRITE_WR_PTR_DONE;
+              end
+           end
+
+           STATE_WRITE_WR_PTR_DONE: begin
               start <= 0;
               if (!active) begin
                  state <= STATE_IDLE;
@@ -371,6 +425,8 @@ module dsp_sm (/*AUTOARG*/
 
        STATE_WRITE_RD_PTR:     state_name     = "WRITE RD PTR";
        STATE_WRITE_RD_PTR_DONE:state_name     = "WRITE RD PTR DONE";
+       STATE_WRITE_WR_PTR:     state_name     = "WRITE WR PTR";
+       STATE_WRITE_WR_PTR_DONE:state_name     = "WRITE WR PTR DONE";
 
 
        default:              state_name     = "DEFAULT";

@@ -49,7 +49,7 @@ module dsp_equation_sum (/*AUTOARG*/
    localparam STATE_WRITE_READ_FILE         = 8'h04;
    localparam STATE_WRITE_READ_FILE_DONE    = 8'h05;
    localparam STATE_READ_OUTPUT_FILE        = 8'h06;
-   localparam STATE_READ_FILE_OUTPUT_DONE   = 8'h07;
+   localparam STATE_READ_OUTPUT_FILE_DONE   = 8'h07;
    localparam STATE_WRITE_RESULTS_FILE      = 8'h08;
    localparam STATE_WRITE_RESULTS_FILE_DONE = 8'h09;
 
@@ -90,9 +90,9 @@ module dsp_equation_sum (/*AUTOARG*/
              file_num <= input_file;
              file_write <= 0;
              file_read <=0;
-             file_write_data <=0;
              equation_done <= 0;
              if (equation_start) begin
+                file_write_data <=0;
                 dsp_output0_reg <=0;
                 state <= STATE_READ_INPUT_FILE;
                 sum <= 0;
@@ -144,11 +144,31 @@ module dsp_equation_sum (/*AUTOARG*/
              if (wr_ptr != rd_ptr) begin
                 state <= STATE_READ_INPUT_FILE;
              end else begin
-                state <= STATE_IDLE;
-                dsp_output0_reg <= sum;
-                equation_done <= 1;
+                state <= STATE_WRITE_RESULTS_FILE;
+                file_num <= output_file;
              end
           end // case: STATE_OPERATION
+
+          STATE_WRITE_RESULTS_FILE: begin
+             file_write <= 1;
+             dsp_output0_reg <= sum;
+             file_write_data <= sum;
+             if (file_active) begin
+                state <= STATE_WRITE_RESULTS_FILE_DONE;
+             end else begin
+                state <= STATE_WRITE_RESULTS_FILE;
+             end
+          end
+          STATE_WRITE_RESULTS_FILE_DONE:begin
+             file_write <= 0;
+             if (file_active) begin
+                state <= STATE_WRITE_RESULTS_FILE_DONE;
+             end else begin
+                state <= STATE_IDLE;
+                equation_done <= 1;
+             end
+          end
+
 
           default:begin
              state <= STATE_IDLE;
