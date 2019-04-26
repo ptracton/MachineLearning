@@ -416,13 +416,12 @@ module dsp_sm (/*AUTOARG*/
        STATE_READ_STATUS_DONE:state_name     = "READ STATUS DONE";
        STATE_READ_CONTROL:     state_name     = "READ CONTROL";
        STATE_READ_CONTROL_DONE:state_name     = "READ CONTROL DONE";
-
        STATE_READ_FILE_DATA:     state_name     = "READ DATA";
        STATE_READ_FILE_DATA_DONE:state_name     = "READ DATA DONE";
-
+       STATE_WRITE_FILE_DATA:     state_name     = "WRITE DATA";
+       STATE_WRITE_FILE_DATA_DONE:state_name     = "WRITE DATA DONE";
        STATE_WRITE_STATUS:     state_name     = "WRITE STATUS";
        STATE_WRITE_STATUS_DONE:state_name     = "WRITE STATUS DONE";
-
        STATE_WRITE_RD_PTR:     state_name     = "WRITE RD PTR";
        STATE_WRITE_RD_PTR_DONE:state_name     = "WRITE RD PTR DONE";
        STATE_WRITE_WR_PTR:     state_name     = "WRITE WR PTR";

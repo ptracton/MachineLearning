@@ -41,14 +41,14 @@ module test_case (/*AUTOARG*/ ) ;
       `CPU_WRITE_FILE_CONFIG(1, `WB_RAM2,       `WB_RAM2+(4*8), `WB_RAM2, `WB_RAM2, `B_CONTROL_DATA_SIZE_WORD);
       `CPU_WRITE_FILE_CONFIG(2, `WB_RAM2+(4*8), `WB_RAM2+(8*8), `WB_RAM2+(4*8), `WB_RAM2+(4*8), `B_CONTROL_DATA_SIZE_WORD);
       // File 2 is the output file
-      `CPU_WRITE_FILE_CONFIG(3, `WB_RAM3, `WB_RAM3+(4*8), `WB_RAM3, `WB_RAM3, `B_CONTROL_DATA_SIZE_WORD);
+      `CPU_WRITE_FILE_CONFIG(3, `WB_RAM3,       `WB_RAM3+(4*8), `WB_RAM3, `WB_RAM3, `B_CONTROL_DATA_SIZE_WORD);
 
       repeat (500) @(posedge `WB_CLK);
 
       $display("\n\nLoading 32 bit data via DAQ @d", $time);
-      for (i=0; i< 5; i=i+1) begin
-         `DAQ_WRITES_FILE(1,  32'h0+(i<<16));  //16 bit writes
-         `DAQ_WRITES_FILE(2,  i);  //16 bit writes
+      for (i=2; i< 7; i=i+1) begin
+         `DAQ_WRITES_FILE(1,  i);  //16 bit writes
+         `DAQ_WRITES_FILE(2,  i*2);  //16 bit writes
       end
 
       input0[`F_DSP_SLAVE_EQUATION_NUMBER] = `B_DSP_EQUATION_MULTIPLY;
@@ -65,16 +65,29 @@ module test_case (/*AUTOARG*/ ) ;
 
       repeat (2000) @(posedge `WB_CLK);
 
+      `CPU_READS(`WB_RAM3,    4'hF, 32'd8,    cpu_read);
+      `CPU_READS(`WB_RAM3+4,  4'hF, 32'd18,   cpu_read);
+      `CPU_READS(`WB_RAM3+8,  4'hF, 32'd32,   cpu_read);
+      `CPU_READS(`WB_RAM3+12, 4'hF, 32'd50,   cpu_read);
+      `CPU_READS(`WB_RAM3+16, 4'hF, 32'd72,   cpu_read);
+
+
       $display("\n\nLoading 32 bit data via DAQ @d", $time);
-      for (i=20; i< 25; i=i+1) begin
-         `DAQ_WRITES_FILE(1,  32'h0+i);  //16 bit writes
+      for (i=0; i< 5; i=i+1) begin
+         `DAQ_WRITES_FILE(1,  i);  //16 bit writes
          `DAQ_WRITES_FILE(2,  i*2);  //16 bit writes
       end
       `CPU_WRITES(`WB_DSP_SLAVE_BASE_ADDRESS+`WB_DSP_SLAVE_INPUT0_OFFSET,   4'hF, input0);
       repeat (2000) @(posedge `WB_CLK);
 
-      `CPU_READS(`WB_RAM3, 4'hF, 32'h0000_000a, cpu_read);
-      `CPU_READS(`WB_RAM3+4, 4'hF, 32'h0000_006e, cpu_read);
+      `CPU_READS(`WB_RAM3+20, 4'hF, 32'd0,    cpu_read);
+      `CPU_READS(`WB_RAM3+24, 4'hF, 32'd2,   cpu_read);
+      `CPU_READS(`WB_RAM3+28, 4'hF, 32'd8,   cpu_read);
+      `CPU_READS(`WB_RAM3+32, 4'hF, 32'd48,   cpu_read);
+      `CPU_READS(`WB_RAM3+00, 4'hF, 32'd32,   cpu_read);
+
+
+      `CPU_WRITES(`WB_DSP_SLAVE_BASE_ADDRESS+`WB_DSP_SLAVE_INPUT0_OFFSET,   4'hF, 0);
 
 
       `TEST_COMPLETE;

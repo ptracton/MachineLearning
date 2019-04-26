@@ -121,6 +121,7 @@ module dsp_equation_multiply (/*AUTOARG*/
           end // case: STATE_IDLE
 
           STATE_READ_INPUT_FILE0: begin
+             file_num <= input_file0;
              file_read <= 1;
              if (file_active) begin
                 state <= STATE_READ_INPUT_FILE0_DONE;
@@ -168,12 +169,9 @@ module dsp_equation_multiply (/*AUTOARG*/
              if (enable_mac) begin
                 mac_output = mac_output + (operand0 * operand1);
              end
-             if (wr_ptr != rd_ptr) begin
-                state <= STATE_READ_INPUT_FILE0;
-             end else begin
-                state <= STATE_WRITE_RESULTS_FILE;
-                file_num <= output_file;
-             end
+             state <= STATE_WRITE_RESULTS_FILE;
+             file_num <= output_file;
+             equation_done = (wr_ptr == rd_ptr);
           end // case: STATE_OPERATION
 
           STATE_WRITE_RESULTS_FILE: begin
@@ -194,10 +192,12 @@ module dsp_equation_multiply (/*AUTOARG*/
              if (file_active) begin
                 state <= STATE_WRITE_RESULTS_FILE_DONE;
              end else begin
-                state <= STATE_IDLE;
-                equation_done <= 1;
+                if (equation_done)
+                  state <= STATE_IDLE;
+                else
+                  state <= STATE_READ_INPUT_FILE0;
              end
-          end
+          end // case: STATE_WRITE_RESULTS_FILE_DONE
 
 
           default:begin
@@ -206,5 +206,26 @@ module dsp_equation_multiply (/*AUTOARG*/
         endcase // case (state)
 
      end
+
+`ifdef SIM
+   reg [(32*8)-1:0] state_name;
+   always @(*) begin
+      case (state)
+        STATE_IDLE: state_name = "STATE_IDLE";
+        STATE_READ_INPUT_FILE0 : state_name = "STATE_READ_INPUT_FILE0";
+        STATE_READ_INPUT_FILE0_DONE: state_name = "STATE_READ_INPUT_FILE0_DONE";
+        STATE_READ_INPUT_FILE1: state_name = "STATE_READ_INPUT_FILE1";
+        STATE_READ_INPUT_FILE1_DONE: state_name = "STATE_READ_INPUT_FILE1_DONE";
+        STATE_OPERATION: state_name = "STATE_OPERATION";
+        STATE_WRITE_READ_FILE: state_name = "STATE_WRITE_READ_FILE";
+        STATE_WRITE_READ_FILE_DONE: state_name = "STATE_WRITE_READ_FILE_DONE";
+        STATE_WRITE_RESULTS_FILE: state_name = "STATE_WRITE_RESULTS_FILE";
+        STATE_WRITE_RESULTS_FILE_DONE: state_name = "STATE_WRITE_RESULTS_FILE_DONE";
+//        : state_name = "";
+
+        default: state_name = "DEFAULT";
+      endcase // case (state)
+   end
+`endif
 
 endmodule // dsp_equation_multiply
