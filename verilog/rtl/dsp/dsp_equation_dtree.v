@@ -51,12 +51,13 @@ module dsp_equation_dtree (/*AUTOARG*/
    wire [1:0]        data_size =dsp_input0_reg[`F_DSP_SLAVE_DATA_SIZE];
    wire              data_signed =dsp_input0_reg[`F_DSP_SLAVE_DATA_SIGNED];
 
-   wire [7:0]        split_file = dsp_input1_reg[`F_DSP_SLAVE_INPUT_FILE0];
+   wire [7:0]        split_file   = dsp_input1_reg[`F_DSP_SLAVE_INPUT_FILE0];
    wire [7:0]        sensor1_file = dsp_input1_reg[`F_DSP_SLAVE_INPUT_FILE1];
    wire [7:0]        sensor2_file = dsp_input1_reg[`F_DSP_SLAVE_INPUT_FILE2];
    wire [7:0]        sensor3_file = dsp_input1_reg[`F_DSP_SLAVE_INPUT_FILE3];
    wire [7:0]        output_file = dsp_input3_reg[`F_DSP_SLAVE_OUTPUT_FILE0];
    reg [31:0]        dtree_output;
+   reg               dtree_result;
 
 
    localparam STATE_IDLE                    = 8'h00;
@@ -76,14 +77,14 @@ module dsp_equation_dtree (/*AUTOARG*/
    reg [31:0]        split_value;
    reg [31:0]        split_control;
    reg [31:0]        sensor_data;
-   reg               dtree_level;
+   reg [3:0]         dtree_level;
 
    wire              leaf = split_control[`F_DSP_DTREE_LEAF];
    wire [7:0]        node_output = split_control[`F_DSP_DTREE_OUTPUT];
 
-   wire [7:0] sensor_file = (dtree_level == 1) ? sensor1_file :
-              (dtree_level == 2) ? sensor2_file :
-              (dtree_level == 3) ? sensor3_file :
+   wire [7:0] sensor_file = (dtree_level == 4'h1) ? sensor1_file :
+              (dtree_level == 4'h2) ? sensor2_file :
+              (dtree_level == 4'h3) ? sensor3_file :
               00;
 
 
@@ -106,7 +107,7 @@ module dsp_equation_dtree (/*AUTOARG*/
         dsp_output0_reg <= 0;
         dsp_output1_reg <= 0;
         dtree_level <= 0;
-
+        dtree_result <= 0;
      end else begin
         case (state)
           STATE_IDLE: begin
@@ -126,7 +127,7 @@ module dsp_equation_dtree (/*AUTOARG*/
                 sample_count <= 0;
                 error <= 0;
                 file_data_in <= 0;
-
+                dtree_result <=0;
              end else begin
                 state <= STATE_IDLE;
              end
@@ -190,9 +191,8 @@ module dsp_equation_dtree (/*AUTOARG*/
           end
 
           STATE_OPERATION: begin
-             //dtree_output = operand0 * operand1;
              sample_count <= sample_count + 1;
-
+             dtree_result <= (sensor_data <= split_value);
              state <= STATE_WRITE_RESULTS_FILE;
              file_num <= output_file;
              equation_done = (wr_ptr == rd_ptr);
