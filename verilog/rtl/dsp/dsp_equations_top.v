@@ -67,29 +67,52 @@ module dsp_equations_top (/*AUTOARG*/
    wire [31:0]       file_write_data_multiply;
    wire              done_multiply;
 
+   wire              interrupt_dtree;
+   wire              error_dtree;
+   wire [7:0]        file_num_dtree;
+   wire              file_write_dtree;
+   wire              file_read_dtree;
+   wire [31:0]       file_write_data_dtree;
+   wire              done_dtree;
+
    wire  equation_enable_sum = (dsp_input0_reg[`F_DSP_SLAVE_EQUATION_NUMBER] == `B_DSP_EQUATION_SUM);
    wire  equation_enable_multiply = (dsp_input0_reg[`F_DSP_SLAVE_EQUATION_NUMBER] == `B_DSP_EQUATION_MULTIPLY);
+   wire  equation_enable_dtree = (dsp_input0_reg[`F_DSP_SLAVE_EQUATION_NUMBER] == `B_DSP_EQUATION_DTREE);
 
    assign interrupt = (equation_enable_sum) ? interrupt_sum :
-                      (equation_enable_multiply) ? interrupt_multiply : 0;
+                      (equation_enable_multiply) ? interrupt_multiply :
+                      (equation_enable_dtree) ? interrupt_dtree :
+                      0;
 
    assign error = (equation_enable_sum) ? error_sum :
-                  (equation_enable_multiply) ? error_multiply : 0;
+                  (equation_enable_multiply) ? error_multiply:
+                  (equation_enable_dtree) ? error_dtree:
+                  0;
 
    assign file_num = (equation_enable_sum) ? file_num_sum :
-                     (equation_enable_multiply) ? file_num_multiply : 0;
+                     (equation_enable_multiply) ? file_num_multiply:
+                     (equation_enable_dtree) ? file_num_dtree:
+                     0;
 
    assign file_write = (equation_enable_sum) ? file_write_sum :
-                       (equation_enable_multiply) ? file_write_multiply : 0;
+                       (equation_enable_multiply) ? file_write_multiply:
+                       (equation_enable_dtree) ? file_write_dtree:
+                       0;
 
    assign file_read = (equation_enable_sum) ? file_read_sum :
-                      (equation_enable_multiply) ? file_read_multiply : 0;
+                      (equation_enable_multiply) ? file_read_multiply:
+                      (equation_enable_dtree) ? file_read_dtree:
+                      0;
 
    assign file_write_data = (equation_enable_sum) ? file_write_data_sum :
-                            (equation_enable_multiply) ? file_write_data_multiply : 0;
+                            (equation_enable_multiply) ? file_write_data_multiply:
+                            (equation_enable_dtree) ? file_write_data_dtree:
+                            0;
 
    assign done = (equation_enable_sum) ? done_sum :
-                 (equation_enable_multiply) ? done_multiply : 0;
+                 (equation_enable_multiply) ? done_multiply:
+                 (equation_enable_dtree) ? done_dtree:
+                 0;
 
    dsp_equation_sum
      sum(
@@ -133,6 +156,31 @@ module dsp_equations_top (/*AUTOARG*/
                .wb_clk(wb_clk),
                .wb_rst(wb_rst),
                .equation_enable(equation_enable_multiply),
+               .dsp_input0_reg(dsp_input0_reg),
+               .dsp_input1_reg(dsp_input1_reg),
+               .dsp_input2_reg(dsp_input2_reg),
+               .dsp_input3_reg(dsp_input3_reg),
+               .file_read_data(file_read_data),
+               .file_active(file_active),
+               .rd_ptr(rd_ptr),
+               .wr_ptr(wr_ptr)
+               );
+   dsp_equation_dtree
+     dtree (
+               // Outputs
+               .interrupt(interrupt_dtree),
+               .error(error_dtree),
+               .file_num(file_num_dtree),
+               .file_write(file_write_dtree),
+               .file_read(file_read_dtree),
+               .file_write_data(file_write_data_dtree),
+               .equation_done(done_dtree),
+               .dsp_output0_reg(dsp_output0_reg),
+               .dsp_output1_reg(dsp_output1_reg),
+               // Inputs
+               .wb_clk(wb_clk),
+               .wb_rst(wb_rst),
+               .equation_enable(equation_enable_dtree),
                .dsp_input0_reg(dsp_input0_reg),
                .dsp_input1_reg(dsp_input1_reg),
                .dsp_input2_reg(dsp_input2_reg),

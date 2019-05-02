@@ -141,6 +141,9 @@ This is a 32*8 = 256 bit structure
 `define F_DSP_SLAVE_SCALAR_MULTIPLY     12
 `define F_DSP_SLAVE_EQUATION_START      31
 
+`define F_DSP_DTREE_OUTPUT              7:0
+`define F_DSP_DTREE_LEAF                31
+
 `define WB_DSP_SLAVE_INPUT1_OFFSET      8'h04
 `define F_DSP_SLAVE_INPUT_FILE0         07:00
 `define F_DSP_SLAVE_INPUT_FILE1         15:08
