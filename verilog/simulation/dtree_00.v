@@ -39,31 +39,31 @@ module test_case (/*AUTOARG*/ ) ;
       `CPU_WRITE_FILE_CONFIG(1, `WB_RAM1,       `WB_RAM1+(4*6), `WB_RAM1, `WB_RAM1, `B_CONTROL_DATA_SIZE_WORD);
 
       // Store out the tree configuration
-      `DAQ_WRITES_FILE(1, 50);
+      `DAQ_WRITES_FILE(1, 100);
       `DAQ_WRITES_FILE(1,  0);
 
-      `DAQ_WRITES_FILE(1, 150);
+      `DAQ_WRITES_FILE(1, 200);
       `DAQ_WRITES_FILE(1,  1<<31 | 2);
 
-      `DAQ_WRITES_FILE(1, 250);
+      `DAQ_WRITES_FILE(1, 300);
       `DAQ_WRITES_FILE(1,  1<<31 | 3);
 
       // Sensor 0
       `CPU_WRITE_FILE_CONFIG(2, `WB_RAM2,       `WB_RAM2+(4*4), `WB_RAM2, `WB_RAM2, `B_CONTROL_DATA_SIZE_WORD);
-      `DAQ_WRITES_FILE(2, 51);
-      `DAQ_WRITES_FILE(2, 51);
-      `DAQ_WRITES_FILE(2, 49);
-      `DAQ_WRITES_FILE(2, 49);
+      `DAQ_WRITES_FILE(2, 50);
+      `DAQ_WRITES_FILE(2, 60);
+      `DAQ_WRITES_FILE(2, 150);
+      `DAQ_WRITES_FILE(2, 160);
 
       // Sensor 1
       `CPU_WRITE_FILE_CONFIG(3, `WB_RAM3,       `WB_RAM3+(4*4), `WB_RAM3, `WB_RAM3, `B_CONTROL_DATA_SIZE_WORD);
-      `DAQ_WRITES_FILE(3, 151);
-      `DAQ_WRITES_FILE(3, 149);
-      `DAQ_WRITES_FILE(3, 251);
-      `DAQ_WRITES_FILE(3, 249);
+      `DAQ_WRITES_FILE(3,  55);
+      `DAQ_WRITES_FILE(3, 255);
+      `DAQ_WRITES_FILE(3, 265);
+      `DAQ_WRITES_FILE(3, 355);
 
       // Output File
-      `CPU_WRITE_FILE_CONFIG(3, `WB_RAM3+16,    `WB_RAM3+16+(4*8), `WB_RAM3+16, `WB_RAM3+16, `B_CONTROL_DATA_SIZE_WORD);
+      `CPU_WRITE_FILE_CONFIG(4, `WB_RAM3+16,    `WB_RAM3+16+(4*8), `WB_RAM3+16, `WB_RAM3+16, `B_CONTROL_DATA_SIZE_WORD);
 
       input0[`F_DSP_SLAVE_EQUATION_NUMBER] = `B_DSP_EQUATION_DTREE;
       input0[`F_DSP_SLAVE_EQUATION_START] = 1;
@@ -76,7 +76,51 @@ module test_case (/*AUTOARG*/ ) ;
       `CPU_WRITES(`WB_DSP_SLAVE_BASE_ADDRESS+`WB_DSP_SLAVE_INPUT3_OFFSET,   4'hF, input3);
       `CPU_WRITES(`WB_DSP_SLAVE_BASE_ADDRESS+`WB_DSP_SLAVE_INPUT0_OFFSET,   4'hF, input0);
 
-      repeat (500) @(posedge `WB_CLK);
+      repeat (300) @(posedge `WB_CLK);
+
+      input0[`F_DSP_SLAVE_EQUATION_NUMBER] = 0;
+      input0[`F_DSP_SLAVE_EQUATION_START] = 0;
+      `CPU_WRITES(`WB_DSP_SLAVE_BASE_ADDRESS+`WB_DSP_SLAVE_INPUT0_OFFSET,   4'hF, input0);
+      repeat (300) @(posedge `WB_CLK);
+
+      input0[`F_DSP_SLAVE_EQUATION_NUMBER] = `B_DSP_EQUATION_DTREE;
+      input0[`F_DSP_SLAVE_EQUATION_START] = 1;
+      `CPU_WRITES(`WB_DSP_SLAVE_BASE_ADDRESS+`WB_DSP_SLAVE_INPUT0_OFFSET,   4'hF, input0);
+      repeat (300) @(posedge `WB_CLK);
+
+      input0[`F_DSP_SLAVE_EQUATION_NUMBER] = 0;
+      input0[`F_DSP_SLAVE_EQUATION_START] = 0;
+      `CPU_WRITES(`WB_DSP_SLAVE_BASE_ADDRESS+`WB_DSP_SLAVE_INPUT0_OFFSET,   4'hF, input0);
+      repeat (300) @(posedge `WB_CLK);
+
+
+      input0[`F_DSP_SLAVE_EQUATION_NUMBER] = `B_DSP_EQUATION_DTREE;
+      input0[`F_DSP_SLAVE_EQUATION_START] = 1;
+      `CPU_WRITES(`WB_DSP_SLAVE_BASE_ADDRESS+`WB_DSP_SLAVE_INPUT0_OFFSET,   4'hF, input0);
+      repeat (300) @(posedge `WB_CLK);
+
+      input0[`F_DSP_SLAVE_EQUATION_NUMBER] = 0;
+      input0[`F_DSP_SLAVE_EQUATION_START] = 0;
+      `CPU_WRITES(`WB_DSP_SLAVE_BASE_ADDRESS+`WB_DSP_SLAVE_INPUT0_OFFSET,   4'hF, input0);
+      repeat (300) @(posedge `WB_CLK);
+
+
+      input0[`F_DSP_SLAVE_EQUATION_NUMBER] = `B_DSP_EQUATION_DTREE;
+      input0[`F_DSP_SLAVE_EQUATION_START] = 1;
+      `CPU_WRITES(`WB_DSP_SLAVE_BASE_ADDRESS+`WB_DSP_SLAVE_INPUT0_OFFSET,   4'hF, input0);
+      repeat (300) @(posedge `WB_CLK);
+
+      input0[`F_DSP_SLAVE_EQUATION_NUMBER] = 0;
+      input0[`F_DSP_SLAVE_EQUATION_START] = 0;
+      `CPU_WRITES(`WB_DSP_SLAVE_BASE_ADDRESS+`WB_DSP_SLAVE_INPUT0_OFFSET,   4'hF, input0);
+
+      `TEST_COMPARE("CPU READ Results",0,0);
+
+      `CPU_READS(`WB_RAM3+16, 4'hF, 2, cpu_read);
+      `CPU_READS(`WB_RAM3+20, 4'hF, 0, cpu_read);
+      `CPU_READS(`WB_RAM3+24, 4'hF, 3, cpu_read);
+      `CPU_READS(`WB_RAM3+24, 4'hF, 0, cpu_read);
+
 
       `TEST_COMPLETE;
    end // initial begin

@@ -54,7 +54,7 @@ module dsp_tasks (/*AUTOARG*/ ) ;
       input [31:0] data;
       begin
          @(posedge `WB_CLK);
-         $display("CPU WRITE addr = 0x%x data = 0x%x sel = 0x%x @ %d", address, data, selection, $time);
+         //$display("CPU WRITE addr = 0x%x data = 0x%x sel = 0x%x @ %d", address, data, selection, $time);
 
          `CPU_ADDR = address;
          `CPU_DATA_WR = data;
@@ -154,7 +154,7 @@ module dsp_tasks (/*AUTOARG*/ ) ;
       input [31:0] data;
       begin
          @(posedge `WB_CLK);
-         $display("DAQ WRITE addr = 0x%x data = 0x%x sel = 0x%x @ %d", address, data, selection, $time);
+         //$display("DAQ WRITE addr = 0x%x data = 0x%x sel = 0x%x @ %d", address, data, selection, $time);
 
          `DAQ_ADDR = address;
          `DAQ_DATA_WR = data;
@@ -184,7 +184,7 @@ module dsp_tasks (/*AUTOARG*/ ) ;
       input [7:0] file_num;
       input [31:0] data;
       begin
-         $display("DAQ WRITES FILE File = %d Data = 0x%x @ %d", file_num, data, $time);
+         //$display("DAQ WRITES FILE File = %d Data = 0x%x @ %d", file_num, data, $time);
 
          if (`FILE_ACTIVE) begin
             @(negedge `FILE_ACTIVE);

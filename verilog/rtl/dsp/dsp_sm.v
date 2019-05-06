@@ -16,9 +16,9 @@ module dsp_sm (/*AUTOARG*/
    file_active, dsp_output0_reg, dsp_output1_reg, dsp_output2_reg,
    dsp_output3_reg, dsp_output4_reg, rd_ptr, wr_ptr,
    // Inputs
-   wb_clk, wb_rst, file_num, file_write, file_read, file_write_data,
-   data_rd, active, dsp_input0_reg, dsp_input1_reg, dsp_input2_reg,
-   dsp_input3_reg, dsp_input4_reg
+   wb_clk, wb_rst, file_num, file_write, file_read, file_reset,
+   file_write_data, data_rd, active, dsp_input0_reg, dsp_input1_reg,
+   dsp_input2_reg, dsp_input3_reg, dsp_input4_reg
    ) ;
    parameter dw = 32;
    parameter aw = 32;
@@ -30,6 +30,8 @@ module dsp_sm (/*AUTOARG*/
    input [7:0] file_num;
    input       file_write;
    input       file_read;
+   input       file_reset;
+
    input [31:0] file_write_data;
    output reg [31:0] file_read_data;
 
@@ -86,6 +88,7 @@ module dsp_sm (/*AUTOARG*/
    localparam STATE_WRITE_RD_PTR_DONE    = 8'h14;
    localparam STATE_WRITE_WR_PTR         = 8'h15;
    localparam STATE_WRITE_WR_PTR_DONE    = 8'h16;
+   localparam STATE_RESET_FILE           = 8'h17;
 
    reg [31:0]          file_base_address;
    reg [31:0]          start_address;
@@ -95,6 +98,7 @@ module dsp_sm (/*AUTOARG*/
    reg [31:0]          control;
    reg [31:0]          file_write_data_reg;
    reg [31:0]          status;
+   reg                 reset_file;
 
    wire [1:0]          data_size = control[`F_CONTROL_DATA_SIZE];
    wire [2:0]          data_size_increment = (data_size == `B_CONTROL_DATA_SIZE_WORD) ? 3'h4 :
@@ -171,6 +175,7 @@ module dsp_sm (/*AUTOARG*/
          dsp_output3_reg <= 0;
          dsp_output4_reg <= 0;
          read_not_write <= 0;
+         reset_file <= 0;
 
       end else begin
          case (state)
@@ -183,6 +188,7 @@ module dsp_sm (/*AUTOARG*/
               data_wr <=0;
               file_active <= 0;
               read_not_write <= 0;
+              reset_file <= file_reset;
 
               // Don't clear these in case ew do another of the same file and we can skip stuff
               // file_base_address <= 0;
@@ -191,7 +197,7 @@ module dsp_sm (/*AUTOARG*/
               // rd_ptr <=0;
               // wr_ptr <=0;
               // control <=0;
-              if (file_read | file_write) begin
+              if (file_read | file_write | file_reset) begin
                  read_not_write <= file_read;
                  file_active <= 1;
                  state <= STATE_READ_START;
@@ -286,13 +292,21 @@ module dsp_sm (/*AUTOARG*/
               start <= 0;
               if (!active) begin
                  if (read_not_write) begin
-                    state <= STATE_READ_FILE_DATA;
+                    if (reset_file) begin
+                       state <= STATE_RESET_FILE;
+                    end else begin
+                       state <= STATE_READ_FILE_DATA;
+                    end
                  end else begin
-                    state <= STATE_WRITE_FILE_DATA;
+                    if (reset_file) begin
+                       state <= STATE_RESET_FILE;
+                    end else begin
+                       state <= STATE_WRITE_FILE_DATA;
+                    end
                  end
                  control <= data_rd;
               end
-           end
+           end // case: STATE_READ_CONTROL_DONE
 
            STATE_READ_FILE_DATA : begin
               // srm = start_write_memory(wr_ptr, file_write_data_reg, data_selection);
@@ -390,6 +404,12 @@ module dsp_sm (/*AUTOARG*/
               end
            end
 
+           STATE_RESET_FILE: begin
+              rd_ptr <= start_address;
+              wr_ptr <= start_address;
+              state <= STATE_WRITE_RD_PTR;
+           end
+
            default: begin
               state <= STATE_IDLE;
            end
@@ -426,6 +446,7 @@ module dsp_sm (/*AUTOARG*/
        STATE_WRITE_RD_PTR_DONE:state_name     = "WRITE RD PTR DONE";
        STATE_WRITE_WR_PTR:     state_name     = "WRITE WR PTR";
        STATE_WRITE_WR_PTR_DONE:state_name     = "WRITE WR PTR DONE";
+       STATE_RESET_FILE:state_name     = "RESET FILE";
 
 
        default:              state_name     = "DEFAULT";
