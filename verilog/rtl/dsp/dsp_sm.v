@@ -17,8 +17,9 @@ module dsp_sm (/*AUTOARG*/
    dsp_output3_reg, dsp_output4_reg, rd_ptr, wr_ptr,
    // Inputs
    wb_clk, wb_rst, file_num, file_write, file_read, file_reset,
-   file_write_data, data_rd, active, dsp_input0_reg, dsp_input1_reg,
-   dsp_input2_reg, dsp_input3_reg, dsp_input4_reg
+   file_write_data, file_rd_ptr_offset, data_rd, active,
+   dsp_input0_reg, dsp_input1_reg, dsp_input2_reg, dsp_input3_reg,
+   dsp_input4_reg
    ) ;
    parameter dw = 32;
    parameter aw = 32;
@@ -34,6 +35,7 @@ module dsp_sm (/*AUTOARG*/
 
    input [31:0] file_write_data;
    output reg [31:0] file_read_data;
+   input [31:0]      file_rd_ptr_offset;
 
    output reg [aw-1:0] address;
    output reg          start;
@@ -41,6 +43,7 @@ module dsp_sm (/*AUTOARG*/
    output reg          write;
    output reg [dw-1:0] data_wr;
    output reg          file_active;
+
 
    input [dw-1:0]      data_rd;
    input               active;
@@ -309,18 +312,25 @@ module dsp_sm (/*AUTOARG*/
            end // case: STATE_READ_CONTROL_DONE
 
            STATE_READ_FILE_DATA : begin
-              // srm = start_write_memory(wr_ptr, file_write_data_reg, data_selection);
-              srm = start_read_memory(rd_ptr, data_selection);
+             // $display("DSP SM READ FILE DATA 0x%x @ %d", rd_ptr, $time);
+
+              if (file_rd_ptr_offset) begin
+                 srm = start_read_memory(start_address+file_rd_ptr_offset, data_selection);
+              end else begin
+                 srm = start_read_memory(rd_ptr, data_selection);
+              end
               if (active) begin
                  write <=0;
                  state <= STATE_READ_FILE_DATA_DONE;
                  // increment pointer and deal with wrap around
-                 rd_ptr = rd_ptr + data_size_increment;
-                 if (rd_ptr > end_address) begin
-                    rd_ptr = start_address;
-                    status[`F_STATUS_WRAP_AROUND] = 1;
+                 if (file_rd_ptr_offset == 0) begin
+                    rd_ptr = rd_ptr + data_size_increment;
+                    if (rd_ptr > end_address) begin
+                       rd_ptr = start_address;
+                       status[`F_STATUS_WRAP_AROUND] = 1;
+                    end
                  end
-              end
+              end // if (active)
            end // case: STATE_READ_FILE_DATA
 
 

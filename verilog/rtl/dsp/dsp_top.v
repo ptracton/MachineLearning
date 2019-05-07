@@ -59,6 +59,7 @@ module dsp_top (/*AUTOARG*/
    wire                 file_read;
    wire [31:0]          file_write_data;
    wire [31:0]          file_read_data;
+   wire [31:0]          file_rd_ptr_offset;
    wire                 start;
    wire [31:0]          rd_ptr;
    wire [31:0]          wr_ptr;
@@ -174,6 +175,7 @@ module dsp_top (/*AUTOARG*/
         .file_write(file_write),
         .file_read(file_read),
         .file_reset(file_reset),
+        .file_rd_ptr_offset(file_rd_ptr_offset),
         .file_write_data(file_write_data),
         .file_read_data(file_read_data),
         .dsp_input0_reg(dsp_input0_reg),
@@ -191,6 +193,7 @@ module dsp_top (/*AUTOARG*/
                .file_write(file_write),
                .file_read(file_read),
                .file_reset(file_reset),
+               .file_rd_ptr_offset(file_rd_ptr_offset),
                .file_write_data(file_write_data),
                .dsp_output0_reg(dsp_output0_reg),
                .dsp_output1_reg(dsp_output1_reg),

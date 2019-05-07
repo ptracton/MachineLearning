@@ -13,7 +13,7 @@ module dsp_equations_top (/*AUTOARG*/
    // Outputs
    dsp_output0_reg, dsp_output1_reg, dsp_output2_reg, dsp_output3_reg,
    dsp_output4_reg, done, file_num, file_write, file_read, file_reset,
-   file_write_data,
+   file_rd_ptr_offset, file_write_data,
    // Inputs
    wb_clk, wb_rst, rd_ptr, wr_ptr, dsp_input0_reg, dsp_input1_reg,
    dsp_input2_reg, dsp_input3_reg, dsp_input4_reg, file_read_data,
@@ -46,6 +46,7 @@ module dsp_equations_top (/*AUTOARG*/
    output wire       file_write;
    output wire       file_read;
    output wire       file_reset;
+   output wire [31:0] file_rd_ptr_offset;
    output wire [31:0] file_write_data;
    input [31:0]      file_read_data;
    input             file_active;
@@ -76,12 +77,14 @@ module dsp_equations_top (/*AUTOARG*/
    wire [31:0]       file_write_data_dtree;
    wire              done_dtree;
    wire              file_reset_dtree;
+   wire [31:0]       file_rd_ptr_offset_dtree;
 
    wire  equation_enable_sum = (dsp_input0_reg[`F_DSP_SLAVE_EQUATION_NUMBER] == `B_DSP_EQUATION_SUM);
    wire  equation_enable_multiply = (dsp_input0_reg[`F_DSP_SLAVE_EQUATION_NUMBER] == `B_DSP_EQUATION_MULTIPLY);
    wire  equation_enable_dtree = (dsp_input0_reg[`F_DSP_SLAVE_EQUATION_NUMBER] == `B_DSP_EQUATION_DTREE);
 
    assign file_reset = (equation_enable_dtree) ? file_reset_dtree : 0;
+   assign file_rd_ptr_offset = (equation_enable_dtree) ? file_rd_ptr_offset_dtree : 0;
 
    assign interrupt = (equation_enable_sum) ? interrupt_sum :
                       (equation_enable_multiply) ? interrupt_multiply :
@@ -182,6 +185,8 @@ module dsp_equations_top (/*AUTOARG*/
                .equation_done(done_dtree),
                .dsp_output0_reg(dsp_output0_reg),
                .dsp_output1_reg(dsp_output1_reg),
+               .file_rd_ptr_offset(file_rd_ptr_offset_dtree),
+
                // Inputs
                .wb_clk(wb_clk),
                .wb_rst(wb_rst),

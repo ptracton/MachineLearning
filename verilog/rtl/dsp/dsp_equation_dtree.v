@@ -118,7 +118,7 @@ module dsp_equation_dtree (/*AUTOARG*/
         dtree_result <= 0;
         file_reset <=0;
         file_rd_ptr_offset <= 0;
-        node <= 1;
+        node <= 0;
 
      end else begin
         case (state)
@@ -128,8 +128,8 @@ module dsp_equation_dtree (/*AUTOARG*/
              file_read <=0;
              file_reset <=0;
              equation_done <= 0;
-             node <= 1;
              if (equation_start) begin
+                node <= 0;
                 dtree_level <= 1;
                 split_value <= 0;
                 split_control <= 0;
@@ -150,9 +150,13 @@ module dsp_equation_dtree (/*AUTOARG*/
           STATE_READ_SPLIT_FILE0_0: begin
              file_num <= split_file;
              file_read <= 1;
-             if (node > 1) begin
-                file_rd_ptr_offset <= (node-1)*4;
+             if (node) begin
+                file_rd_ptr_offset <= (node << 2)+4;
+                $display("RD PTR OFFSET %d @ %d", file_rd_ptr_offset, $time);
+             end else begin
+                file_rd_ptr_offset <= 0;
              end
+
              if (file_active) begin
                 state <= STATE_READ_SPLIT_FILE0_DONE_0;
              end else begin
@@ -171,7 +175,13 @@ module dsp_equation_dtree (/*AUTOARG*/
 
           STATE_READ_SPLIT_FILE0_1: begin
              file_read <= 1;
+             if (node) begin
+                file_rd_ptr_offset <= (node << 2)+8;
+             end else begin
+                file_rd_ptr_offset <= 0;
+             end
              if (file_active) begin
+                $display("RD PTR OFFSET %d @ %d", file_rd_ptr_offset, $time);
                 state <= STATE_READ_SPLIT_FILE0_DONE_1;
              end else begin
                 state <= STATE_READ_SPLIT_FILE0_1;
@@ -180,6 +190,7 @@ module dsp_equation_dtree (/*AUTOARG*/
 
           STATE_READ_SPLIT_FILE0_DONE_1:begin
              file_read <= 0;
+             file_rd_ptr_offset <= 0;
              if (file_active) begin
                 state <= STATE_READ_SPLIT_FILE0_DONE_1;
                 split_control <= file_read_data;
@@ -214,7 +225,6 @@ module dsp_equation_dtree (/*AUTOARG*/
              state <= STATE_WRITE_RESULTS_FILE;
              file_num <= output_file;
              equation_done = leaf;
-             $display("Operation: Node: %d Sensor File %d Sensor = %d Split = %d Sample = %d Result = %d Level = %d Leaf = %d@ %d", node, sensor_file, sensor_data, split_value, sample_count, dtree_result, dtree_level, leaf, $time);
              state <= STATE_OPERATION_DONE;
           end // case: STATE_OPERATION
 
@@ -229,7 +239,8 @@ module dsp_equation_dtree (/*AUTOARG*/
                 end else begin
                    node <= (node << 1) + 1;
                 end
-             end
+             end // else: !if(leaf)
+             $display("Operation Done: Node: %d Sensor File %d Sensor = %d Split = %d Sample = %d Result = %d Level = %d Leaf = %d@ %d", node, sensor_file, sensor_data, split_value, sample_count, dtree_result, dtree_level, leaf, $time);
           end // case: STATE_OPERATION_DONE
 
 
@@ -285,20 +296,20 @@ module dsp_equation_dtree (/*AUTOARG*/
    reg [(32*8)-1:0] state_name;
    always @(*) begin
       case (state)
-        STATE_IDLE: state_name = "STATE_IDLE";
-        STATE_READ_SPLIT_FILE0_0 : state_name = "STATE_READ_SPLIT_FILE0_0";
-        STATE_READ_SPLIT_FILE0_DONE_0: state_name = "STATE_READ_SPLIT_FILE0_DONE_0";
-        STATE_READ_SPLIT_FILE0_1 : state_name = "STATE_READ_SPLIT_FILE0_1";
-        STATE_READ_SPLIT_FILE0_DONE_1: state_name = "STATE_READ_SPLIT_FILE0_DONE_1";
-        STATE_READ_DATA_FILE: state_name = "STATE_READ_DATA_FILE";
-        STATE_READ_DATA_FILE_DONE: state_name = "STATE_READ_DATA_FILE_DONE";
+        STATE_IDLE: state_name = "IDLE";
+        STATE_READ_SPLIT_FILE0_0 : state_name = "READ_SPLIT_FILE0_0";
+        STATE_READ_SPLIT_FILE0_DONE_0: state_name = "READ_SPLIT_FILE0_DONE_0";
+        STATE_READ_SPLIT_FILE0_1 : state_name = "READ_SPLIT_FILE0_1";
+        STATE_READ_SPLIT_FILE0_DONE_1: state_name = "READ_SPLIT_FILE0_DONE_1";
+        STATE_READ_DATA_FILE: state_name = "READ_DATA_FILE";
+        STATE_READ_DATA_FILE_DONE: state_name = "READ_DATA_FILE_DONE";
 
 
-        STATE_OPERATION: state_name = "STATE_OPERATION";
-        STATE_WRITE_RESULTS_FILE: state_name = "STATE_WRITE_RESULTS_FILE";
-        STATE_WRITE_RESULTS_FILE_DONE: state_name = "STATE_WRITE_RESULTS_FILE_DONE";
-        STATE_RESET_SPLIT_FILE: state_name = "STATE_RESET_SPLIT_FILE";
-        STATE_RESET_SPLIT_FILE_DONE: state_name = "STATE_RESET_SPLIT_FILE_DONE";
+        STATE_OPERATION: state_name = "OPERATION";
+        STATE_WRITE_RESULTS_FILE: state_name = "WRITE_RESULTS_FILE";
+        STATE_WRITE_RESULTS_FILE_DONE: state_name = "WRITE_RESULTS_FILE_DONE";
+        STATE_RESET_SPLIT_FILE: state_name = "RESET_SPLIT_FILE";
+        STATE_RESET_SPLIT_FILE_DONE: state_name = "RESET_SPLIT_FILE_DONE";
         //        : state_name = "";
 
         default: state_name = "DEFAULT";
