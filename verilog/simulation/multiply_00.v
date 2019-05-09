@@ -15,7 +15,7 @@ module test_case (/*AUTOARG*/ ) ;
    // These parameters need to be set for each test case
    //
    parameter simulation_name = "multiply_00";
-   parameter number_of_tests = 2;
+   parameter number_of_tests = 10;
 
    integer i;
    reg [31:0] input0;

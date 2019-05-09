@@ -26,7 +26,7 @@ module testbench (/*AUTOARG*/ ) ;
    initial begin
       wb_clk <= 0;
       forever begin
-         #10 wb_clk <= ~wb_clk;
+         #178 wb_clk <= ~wb_clk;
       end
    end
 
@@ -36,8 +36,8 @@ module testbench (/*AUTOARG*/ ) ;
    reg wb_rst;
    initial begin
       wb_rst <= 0;
-      #100 wb_rst <= 1;
-      #100 wb_rst <= 0;
+      #200 wb_rst <= 1;
+      #600 wb_rst <= 0;
    end
 
    wire [31:0] dtb_pad;

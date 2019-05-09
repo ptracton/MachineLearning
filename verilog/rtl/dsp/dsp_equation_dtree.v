@@ -118,7 +118,7 @@ module dsp_equation_dtree (/*AUTOARG*/
         dtree_result <= 0;
         file_reset <=0;
         file_rd_ptr_offset <= 0;
-        node <= 0;
+        node <= 1;
 
      end else begin
         case (state)
@@ -129,7 +129,7 @@ module dsp_equation_dtree (/*AUTOARG*/
              file_reset <=0;
              equation_done <= 0;
              if (equation_start) begin
-                node <= 0;
+                node <= 1;
                 dtree_level <= 1;
                 split_value <= 0;
                 split_control <= 0;
@@ -150,8 +150,13 @@ module dsp_equation_dtree (/*AUTOARG*/
           STATE_READ_SPLIT_FILE0_0: begin
              file_num <= split_file;
              file_read <= 1;
-             if (node) begin
-                file_rd_ptr_offset <= (node << 2)+4;
+             if (node>1) begin
+                if (node[0]) begin
+                   file_rd_ptr_offset <= (node << 2) + 4;
+                end else begin
+                   file_rd_ptr_offset <= (node << 2);
+
+                end
                 $display("RD PTR OFFSET %d @ %d", file_rd_ptr_offset, $time);
              end else begin
                 file_rd_ptr_offset <= 0;
@@ -170,18 +175,17 @@ module dsp_equation_dtree (/*AUTOARG*/
                 split_value <= file_read_data;
              end else begin
                 state <= STATE_READ_SPLIT_FILE0_1;
+                if (node>1) begin
+                   // TODO: check size of this adjustment
+                   file_rd_ptr_offset <= file_rd_ptr_offset + 4;
+                end
              end
           end // case: STATE_READ_INPUT_FILE0_DONE
 
           STATE_READ_SPLIT_FILE0_1: begin
              file_read <= 1;
-             if (node) begin
-                file_rd_ptr_offset <= (node << 2)+8;
-             end else begin
-                file_rd_ptr_offset <= 0;
-             end
              if (file_active) begin
-                $display("RD PTR OFFSET %d @ %d", file_rd_ptr_offset, $time);
+                //$display("RD PTR OFFSET %d @ %d", file_rd_ptr_offset, $time);
                 state <= STATE_READ_SPLIT_FILE0_DONE_1;
              end else begin
                 state <= STATE_READ_SPLIT_FILE0_1;
@@ -190,12 +194,12 @@ module dsp_equation_dtree (/*AUTOARG*/
 
           STATE_READ_SPLIT_FILE0_DONE_1:begin
              file_read <= 0;
-             file_rd_ptr_offset <= 0;
              if (file_active) begin
                 state <= STATE_READ_SPLIT_FILE0_DONE_1;
                 split_control <= file_read_data;
              end else begin
                 file_num <= sensor_file;
+                file_rd_ptr_offset <= 0;
                 state <= STATE_READ_DATA_FILE;
              end
           end
@@ -222,23 +226,25 @@ module dsp_equation_dtree (/*AUTOARG*/
           STATE_OPERATION: begin
              sample_count <= sample_count + 1;
              dtree_result <= (sensor_data <= split_value);
-             state <= STATE_WRITE_RESULTS_FILE;
              file_num <= output_file;
              equation_done = leaf;
              state <= STATE_OPERATION_DONE;
+
           end // case: STATE_OPERATION
 
           STATE_OPERATION_DONE: begin
+             if (dtree_result) begin
+                node <= (node << 1);
+             end else begin
+                node <= (node << 1) + 1;
+             end
+
              if (leaf) begin
                 state <= STATE_WRITE_RESULTS_FILE;
              end else begin
                 state <= STATE_READ_SPLIT_FILE0_0;
                 dtree_level <= dtree_level + 1;
-                if (dtree_result) begin
-                   node <= (node << 1);
-                end else begin
-                   node <= (node << 1) + 1;
-                end
+
              end // else: !if(leaf)
              $display("Operation Done: Node: %d Sensor File %d Sensor = %d Split = %d Sample = %d Result = %d Level = %d Leaf = %d@ %d", node, sensor_file, sensor_data, split_value, sample_count, dtree_result, dtree_level, leaf, $time);
           end // case: STATE_OPERATION_DONE
@@ -306,6 +312,7 @@ module dsp_equation_dtree (/*AUTOARG*/
 
 
         STATE_OPERATION: state_name = "OPERATION";
+        STATE_OPERATION_DONE: state_name = "OPERATION DONE";
         STATE_WRITE_RESULTS_FILE: state_name = "WRITE_RESULTS_FILE";
         STATE_WRITE_RESULTS_FILE_DONE: state_name = "WRITE_RESULTS_FILE_DONE";
         STATE_RESET_SPLIT_FILE: state_name = "RESET_SPLIT_FILE";

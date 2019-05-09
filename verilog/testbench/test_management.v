@@ -5,7 +5,7 @@
    initial begin
       clk <= 1'b0;
       forever begin
-         #5 clk <= ~clk;         
+         #178 clk <= ~clk;
       end
    end
 
@@ -16,8 +16,6 @@
    reg reset;
    initial begin
       reset <= 1'b0;
-      #13 reset <= 1'b1;
-      #150 reset <= 1'b0;            
+      #130 reset <= 1'b1;
+      #350 reset <= 1'b0;
    end
-   
-

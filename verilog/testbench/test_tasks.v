@@ -118,7 +118,7 @@ module test_tasks (/*AUTOARG*/ ) ;
       begin
          if (test_case_fail) begin
             pass_fail = "\033[1;31mFAIL\033[0m";
-//            `TEST_FAILED <= 1;
+            `TEST_FAILED <= 1;
          end else begin
             pass_fail = "\033[1;32mPASS\033[0m";
          end

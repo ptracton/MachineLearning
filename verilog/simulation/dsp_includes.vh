@@ -15,9 +15,12 @@
 `define TB          testbench
 `define WB_RST      `TB.wb_rst
 `define WB_CLK      `TB.wb_clk
-`define DSP         `TB.dsp
-`define DAQ         `TB.daq
+`define DUT         `TB.dut
+`define DSP         `DUT.dsp
+`define DAQ         `DUT.daq
 `define DSP_TASKS   `TB.dsp_tasks
+`define DSP_EQUATION_DTREE  `DSP.equations.dtree
+//testbench.dut.dsp.equations.dtree.dtree_output[31:0]
 
 `define DAQ_READS   `DSP_TASKS.DAQ_READ
 `define DAQ_WRITES  `DSP_TASKS.DAQ_WRITE
