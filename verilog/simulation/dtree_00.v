@@ -79,37 +79,37 @@ module test_case (/*AUTOARG*/ ) ;
       `CPU_WRITES(`WB_DSP_SLAVE_BASE_ADDRESS+`WB_DSP_SLAVE_INPUT0_OFFSET,   4'hF, input0);
 
       @(posedge `DSP_EQUATION_DTREE.equation_done);
-      repeat (300) @(posedge `WB_CLK);
+      repeat (100) @(posedge `WB_CLK);
 
 
       input0[`F_DSP_SLAVE_EQUATION_NUMBER] = 0;
       input0[`F_DSP_SLAVE_EQUATION_START] = 0;
       `CPU_WRITES(`WB_DSP_SLAVE_BASE_ADDRESS+`WB_DSP_SLAVE_INPUT0_OFFSET,   4'hF, input0);
-      repeat (300) @(posedge `WB_CLK);
+      repeat (100) @(posedge `WB_CLK);
 
       input0[`F_DSP_SLAVE_EQUATION_NUMBER] = `B_DSP_EQUATION_DTREE;
       input0[`F_DSP_SLAVE_EQUATION_START] = 1;
       `CPU_WRITES(`WB_DSP_SLAVE_BASE_ADDRESS+`WB_DSP_SLAVE_INPUT0_OFFSET,   4'hF, input0);
 
       @(posedge `DSP_EQUATION_DTREE.equation_done);
-      repeat (300) @(posedge `WB_CLK);
+      repeat (100) @(posedge `WB_CLK);
 
       input0[`F_DSP_SLAVE_EQUATION_NUMBER] = 0;
       input0[`F_DSP_SLAVE_EQUATION_START] = 0;
       `CPU_WRITES(`WB_DSP_SLAVE_BASE_ADDRESS+`WB_DSP_SLAVE_INPUT0_OFFSET,   4'hF, input0);
-      repeat (300) @(posedge `WB_CLK);
+      repeat (100) @(posedge `WB_CLK);
 
 
       input0[`F_DSP_SLAVE_EQUATION_NUMBER] = `B_DSP_EQUATION_DTREE;
       input0[`F_DSP_SLAVE_EQUATION_START] = 1;
       `CPU_WRITES(`WB_DSP_SLAVE_BASE_ADDRESS+`WB_DSP_SLAVE_INPUT0_OFFSET,   4'hF, input0);
       @(posedge `DSP_EQUATION_DTREE.equation_done);
-      repeat (300) @(posedge `WB_CLK);
+      repeat (100) @(posedge `WB_CLK);
 
       input0[`F_DSP_SLAVE_EQUATION_NUMBER] = 0;
       input0[`F_DSP_SLAVE_EQUATION_START] = 0;
       `CPU_WRITES(`WB_DSP_SLAVE_BASE_ADDRESS+`WB_DSP_SLAVE_INPUT0_OFFSET,   4'hF, input0);
-      repeat (300) @(posedge `WB_CLK);
+      repeat (100) @(posedge `WB_CLK);
 
 
       input0[`F_DSP_SLAVE_EQUATION_NUMBER] = `B_DSP_EQUATION_DTREE;
