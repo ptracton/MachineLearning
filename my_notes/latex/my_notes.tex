@@ -1,0 +1,162 @@
+\documentclass[12pt, svgnames, titlepage]{report}
+
+\textwidth=7in
+\textheight=9.5in
+\topmargin=-1in
+\headheight=0in
+\headsep=.5in
+\hoffset  -.85in
+
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+
+%\usepackage[T1]{fontenc}
+%\usepackage{txfonts}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\pagestyle{fancyplain}
+\usepackage{xcolor}
+\definecolor{UCLABlue}{RGB}{83, 104, 149}
+\definecolor{UCLAGold}{RGB}{254, 187, 54}
+
+
+
+
+\author{Philip Tracton}
+\date{\today}
+\date{}
+
+\usepackage{tikz}
+\usepackage{verbatim}
+\usepackage{kpfonts}
+\usepackage[explicit]{titlesec}
+\newcommand*\chapterlabel{}
+\titleformat{\chapter}
+  {\gdef\chapterlabel{}
+   \normalfont\sffamily\Huge\bfseries\scshape}
+  {\gdef\chapterlabel{\thechapter\ }}{0pt}
+  {\begin{tikzpicture}[remember picture,overlay]
+    \node[yshift=-3cm] at (current page.north west)
+      {\begin{tikzpicture}[remember picture, overlay]
+        \draw[fill=UCLABlue] (0,0) rectangle
+          (\paperwidth,3cm);
+        \node[anchor=east,xshift=.9\paperwidth,rectangle,
+              rounded corners=20pt,inner sep=11pt,
+              fill=UCLAGold]
+              {\color{white}\chapterlabel#1};
+       \end{tikzpicture}
+      };
+   \end{tikzpicture}
+  }
+\titlespacing*{\chapter}{0pt}{50pt}{-60pt}
+
+\usepackage{changepage}
+\newenvironment{restoretext}%
+    {\@parboxrestore%
+     \begin{adjustwidth}{}{\leftmargin}%
+    }{\end{adjustwidth}
+     }
+
+\lfoot{\colorbox{UCLABlue}{\textcolor{white}{P. Tracton}}}
+\cfoot{\colorbox{UCLABlue}{\textcolor{white}{Machine Learning}}}
+\rfoot{\colorbox{UCLABlue}{\textcolor{white}{\thepage}}}
+
+
+\usepackage{array}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+\usepackage{graphicx}
+\usepackage[export]{adjustbox}
+
+% For math and matrix work
+\usepackage{amsmath}
+
+% Use multicol for when we want to show matlab and python code
+% side by side doing the same things
+\usepackage{multicol}
+%\setlength{\columnsep}{1cm}
+
+% use minted for formatting and highlighting code examples
+\usepackage{minted}
+%\setminted{fontsize=\Large,baselinestretch=1}
+% Use a pale grey background for the code
+\definecolor{Background}{RGB}{240, 240, 240}
+
+% https://tex.stackexchange.com/questions/27802/set-noindent-for-entire-file/27804
+\setlength\parindent{0pt}
+
+% American Math Society Symbols package
+\usepackage{amssymb}
+
+\newmintedfile[matlabcode]{matlab}{
+bgcolor=Background,
+fontfamily=tt,
+linenos=true,
+numberblanklines=true,
+numbersep=5pt,
+gobble=0,
+frame=leftline,
+framerule=0.4pt,
+framesep=2mm,
+funcnamehighlighting=true,
+tabsize=4,
+obeytabs=false,
+mathescape=false
+samepage=false, %with this setting you can force the list to appear on the same page
+showspaces=false,
+showtabs =false,
+texcl=false,
+breaklines=true,
+}
+
+\newmintedfile[pythoncode]{python}{
+bgcolor=Background,
+fontfamily=tt,
+linenos=true,
+numberblanklines=true,
+numbersep=5pt,
+gobble=0,
+frame=leftline,
+framerule=0.4pt,
+framesep=2mm,
+funcnamehighlighting=true,
+tabsize=4,
+obeytabs=false,
+mathescape=false
+samepage=false, %with this setting you can force the list to appear on the same page
+showspaces=false,
+showtabs =false,
+texcl=false,
+breaklines=true,
+}
+
+
+\title{My Notes for Machine Learning}
+
+\begin{document}
+\maketitle
+\newpage
+
+\vspace{10mm}
+\tableofcontents
+\newpage
+
+\chapter{Math Review}
+\vspace{10mm}
+\input{latex/linear_algebra.tex}
+\input{latex/calculus.tex}
+\input{latex/prob_and_stats.tex}
+
+\chapter{Introduction to Machine Learning}
+\vspace{10mm}
+\section{Linear Regression}
+\section{Logistic Regression}
+
+\end{document}

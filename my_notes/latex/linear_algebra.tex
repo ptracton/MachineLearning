@@ -1,0 +1,348 @@
+\section{Linear Algebra}
+
+\subsection{Matrix}
+
+A matrix is a 2-dimensional array of numbers.\\
+
+\textbf{N} is number of rows.  \textbf{M} is number of columns.\\
+
+Matrices are specified as NxM.\\
+
+$A_{ij}$ is how you specify a single location in a matrix.  It is row I and column J.
+
+
+
+\begin{equation}
+  \textbf{A} = \left[
+    \begin{matrix}
+      x_{11} & x_{12} & x_{13} & \dots  & x_{1m} \\
+      x_{21} & x_{22} & x_{23} & \dots  & x_{2m} \\
+      \vdots & \vdots & \vdots & \ddots & \vdots \\
+      x_{N1} & x_{N2} & x_{N3} & \dots  & x_{NM}
+    \end{matrix}
+    \right]
+  \label{eqn:BasicMatrix}
+\end{equation}
+
+A vector is a matrix with one column and many rows and specified as Nx1\\
+
+$v_i$ is the $i^{th}$ element of the vector V.\\
+
+\begin{equation}
+  \textbf{{v}} = \left[
+    \begin{matrix}
+      x_{0} \\
+      x_{1} \\
+      x_{2} \\
+      \vdots \\
+      x_{N}
+    \end{matrix}
+    \right]
+  \label{eqn:BasicVector}
+\end{equation}
+
+Matrices are usually denoted by uppercase names while vectors are lowercase.\\
+
+\textbf{Scalar} means that an object is a single value, not a vector or matrix.\\
+
+$\mathbb{R}$ refers to the set of scalar real numbers.\\
+
+$\mathbb{R}^{n}$ refers to the set of n-dimensional vectors of real numbers.\\
+
+
+\newpage
+\underline{\href{http://www.mathworks.com}{Matlab}} (or \underline{\href{https://www.gnu.org/software/octave/}{Octave}}) and \underline{\href{http://www.python.org}{Python}} are 2 very common languages for doing machine learning and math work in general.  They are very different languages.  Matlab is a number crunching specific language.  This is pretty much all it does.  Python is a general purpose language with a lot of built up libraries, \underline{\href{https://numpy.org/}{Numpy}} in particular,  to support doing this type of work.\\
+
+This document will try to go over all concepts in both languages in order to better understand how the math works from 2 different perspectives.\\
+
+One of the issues to keep track of is that Matlab starts counting at 1 and Python starts counting at 0!  Notice in the code below that A(2,3) in Matlab will get you the same location as A[1][2] in Python for the same matrices\\
+
+\begin{multicols}{2}
+  [
+    This is an example of creating a simple 3x3 matrix in both Matlab and Python.  Notice that Matlab is a little bit simpler.  There is no need to import a library for it.  Python doesn't need one either technically, but numpy will be used a lot for machine learning work and we should just start with it.\\
+  ]
+  Matlab\\
+  \matlabcode{matlab/matrix.m}
+  \columnbreak
+
+  Python\\
+  \pythoncode{python/matrix.py}
+  
+\end{multicols}
+
+\subsection{Matrix Operations}
+\subsubsection{Addition and Subtraction}
+Addition and subtraction are element-wise, so you simply add or subtract each corresponding element:\\
+To add or subtract two matrices, their dimensions must be the \textbf{same}.\\
+
+\begin{equation}
+  \left[
+    \begin{matrix}
+      a & b \\
+      c & d
+    \end{matrix}
+    \right] +
+  \left[
+    \begin{matrix}
+      w & x \\
+      y & z
+    \end{matrix}
+    \right]=
+  \left[
+    \begin{matrix}
+      a+w & b+x \\
+      c+y & d+z
+    \end{matrix}
+    \right]
+  \label{eqn:MatrixAddition}
+\end{equation}
+
+\begin{multicols}{2}
+  Matlab\\
+  \matlabcode{matlab/matrix_addition.m}
+  \columnbreak
+
+  Python\\
+  \pythoncode{python/matrix_addition.py}
+  
+\end{multicols}
+
+\begin{equation}
+  \left[
+    \begin{matrix}
+      a & b \\
+      c & d
+    \end{matrix}
+    \right] -
+  \left[
+    \begin{matrix}
+      w & x \\
+      y & z
+    \end{matrix}
+    \right]=
+  \left[
+    \begin{matrix}
+      a-w & b-x \\
+      c-y & d-z
+    \end{matrix}
+    \right]
+  \label{eqn:MatrixSubtraction}
+\end{equation}
+
+\begin{multicols}{2}
+  Matlab\\
+  \matlabcode{matlab/matrix_subtraction.m}
+  \columnbreak
+
+  Python\\
+  \pythoncode{python/matrix_subtraction.py}
+  
+\end{multicols}
+
+For matrix addition/subtraction there is not much of a difference.  Python takes a little more set up in that you need to import numpy, but the actual operational step is identical.
+
+\subsubsection{Scalar Multiplication and Division}
+In scalar multiplication, we simply multiply every element by the scalar value:
+\begin{equation}
+  \left[
+    \begin{matrix}
+      a & b \\
+      c & d
+    \end{matrix}
+    \right] * x =
+  \left[
+    \begin{matrix}
+      a*x & b*x \\
+      c*x & d*x
+    \end{matrix}
+    \right]
+  \label{eqn:MatrixScalarMultiplication}
+\end{equation}
+
+In scalar division, we simply divide every element by the scalar value:
+\begin{equation}
+  \left[
+    \begin{matrix}
+      a & b \\
+      c & d
+    \end{matrix}
+    \right] / x =
+  \left[
+    \begin{matrix}
+      a/x & b/x \\
+      c/x & d/x
+    \end{matrix}
+    \right]
+  \label{eqn:MatrixScalarMultiplication}
+\end{equation}
+
+\begin{multicols}{2}
+  Matlab\\
+  \matlabcode{matlab/matrix_scalar_mult_div.m}
+  \columnbreak
+
+  Python\\
+  \pythoncode{python/matrix_scalar_mult_div.py}
+  
+\end{multicols}
+
+\subsubsection{Matrix Vector Multiplication}
+The result is a \textbf{vector}. The number of \textbf{columns} of the matrix must equal the number of \textbf{rows} of the vector.\\
+
+An \textbf{m x n matrix} multiplied by an \textbf{n x 1} vector results in an \textbf{m x 1} vector.\\
+
+Some more \underline{\href{https://mathinsight.org/matrix_vector_multiplication}{Math Insights}} \\
+
+Below is an example of a matrix-vector multiplication. Make sure you understand how the multiplication works. \\
+
+\begin{equation}
+  \left[
+    \begin{matrix}
+      a & b \\
+      c & d \\
+      e & f 
+    \end{matrix}
+    \right] *
+  \left[
+    \begin{matrix}
+      x\\
+      y\\
+    \end{matrix}
+    \right]=
+  \left[
+    \begin{matrix}
+      a*x + b*y \\
+      c*x + d*y\\
+      e*x + f*y
+    \end{matrix}
+    \right]
+  \label{eqn:MatrixVectorMultiplication}
+\end{equation}
+
+
+\subsubsection{Matrix Matrix Multiplication}
+
+This is also known as the \underline{\href{https://www.mathsisfun.com/algebra/vectors-dot-product.html}{dot product}}.\\
+
+An \textbf{m x n} matrix multiplied by an \textbf{n x o} matrix results in an \textbf{m x o} matrix. In the example, a 3 x 2 matrix times a 2 x 2 matrix resulted in a 3 x 2 matrix.\\
+
+To multiply two matrices, the number of columns of the first matrix must equal the number of rows of the second matrix.  The process is to take each row of the first matrix and multiply it by each column of the second matrix.  Iterate this through each row in the first matrix with each column in the second matrix.  \\
+
+You can \textbf{NOT} reverse the order.  $\textbf{A}*\textbf{B}$ is not $\textbf{B}*\textbf{A}$\\
+Multiplication is associative.  $(\textbf{A}*\textbf{B})*\textbf{C} = \textbf{A}*(\textbf{B}*\textbf{C})$\\
+
+\begin{equation}
+  \left[
+    \begin{matrix}
+      a & b \\
+      c & d \\
+      e & f
+    \end{matrix}
+    \right] *
+  \left[
+    \begin{matrix}
+      w & x \\
+      y & z
+    \end{matrix}
+    \right]=
+  \left[
+    \begin{matrix}
+      a*w + b*y  & a*x + b*z\\
+      c*w + d*y  & c*x + d*z\\
+      e*w + f*y  & e*x + f*z
+    \end{matrix}
+    \right]
+  \label{eqn:MatrixMatrixMultiplication}
+\end{equation}
+
+\begin{multicols}{2}
+  Matlab\\
+  \matlabcode{matlab/matrix_matrix_multiplication.m}
+  \columnbreak
+
+  Python\\
+  \pythoncode{python/matrix_matrix_multiplication.py}
+  
+\end{multicols}
+
+Notice the syntax is starting to differ more.  For Matlab, you can just multiply the vectors like any other variable.  In python we need to use the \underline{\href{https://docs.scipy.org/doc/numpy/reference/generated/numpy.dot.html}{dot method}}.  Notice it is A that calls dot with B as a parameter.
+
+\subsubsection{Identity}
+
+The identity matrix is a square matrix (m=n) that has 1's along the diagnal and zeros everywhere else and is usually denoted by the letter \textbf{I}.
+
+The identity matrix, when multiplied by any matrix of the same dimensions, results in the original matrix. It's just like multiplying numbers by 1. The identity matrix simply has 1's on the diagonal (upper left to lower right diagonal) and 0's elsewhere.\\
+
+When multiplying the identity matrix after some matrix (A∗I), the square identity matrix's dimension should match the other matrix's \textbf{columns}. When multiplying the identity matrix before some other matrix (I∗A), the square identity matrix's dimension should match the other matrix's \textbf{rows}.\\
+
+\begin{equation}
+  \textbf{I} = \left[
+    \begin{matrix}
+      1 & 0 & 0 & \dots  & 0 \\
+      0 & 1 & 0 & \dots  & 0 \\
+      \vdots & \vdots & \vdots & \ddots & \vdots \\
+      0 & 0 & 0 & \dots  & 1
+    \end{matrix}
+    \right]
+  \label{eqn:IdentityMatrix}
+\end{equation}
+
+\newpage
+\begin{multicols}{2}
+  Matlab\\
+  \matlabcode{matlab/matrix_identity.m}
+  \columnbreak
+
+  Python\\
+  \pythoncode{python/matrix_identity.py}
+  
+\end{multicols}
+
+Again the syntax is still mostly the same.  Matlab multiplies are calls to the dot method in Python.  The \underline{\href{https://www.mathworks.com/help/matlab/ref/eye.html}{eye()}} function in Matlab does the same thing as the numpy version of \underline{\href{https://docs.scipy.org/doc/numpy/reference/generated/numpy.eye.htm}{eye()}}.  The difference is that in Matlab it is a built in function and in Python you need to call the method inside the Numpy library.
+
+\subsubsection{Transpose}
+
+The \textbf{transposition} of a matrix is like rotating the matrix 90° in clockwise direction and then reversing it. We can compute transposition of matrices in matlab with the transpose(A) function or A'\\
+
+In other words: $A_{ij} = A^T_{ji}$  \\
+
+​ \begin{multicols}{2}
+  Matlab\\
+  \matlabcode{matlab/matrix_transpose.m}
+  \columnbreak
+
+  Python\\
+  \pythoncode{python/matrix_transpose.py}
+  
+\end{multicols}	
+
+In Matlab the ' operator will transpose a matrix.  There is a \underline{\href{https://www.mathworks.com/help/matlab/ref/transpose.html}{transpose}} function in Matlab but the ' notation is very common and easier.\\
+
+In Python we must call the \underline{\href{https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.transpose.html}{transpose method}} on our matrix.\\
+
+\subsubsection{Inverse}
+
+The inverse of a matrix A is denoted $A^{-1}$.
+Multiplying by the inverse results in the identity matrix.  \\
+
+\begin{equation}
+I = A*A^{-1}
+\end{equation}
+
+A non square matrix does not have an inverse matrix. We can compute inverses of matrices in Octave with the \underline{\href{https://octave.sourceforge.io/octave/function/pinv.html}{pinv(A)}} function and in Matlab with the \underline{\href{https://www.mathworks.com/help/matlab/ref/inv.html}{inv(A)}} function. Matrices that don't have an inverse are \underline{\href{http://mathworld.wolfram.com/SingularMatrix.html}{singular}} or \underline{\href{https://www.encyclopediaofmath.org/index.php/Degenerate_matrix}{degenerate}}. \\
+
+\newpage
+​ \begin{multicols}{2}
+  Matlab\\
+  \matlabcode{matlab/matrix_inverse.m}
+  \columnbreak
+
+  Python\\
+  \pythoncode{python/matrix_inverse.py}
+
+\end{multicols}	
+
+  The Matlab code is pretty straight forward.  You can call the inv() function on a matrix.  You can multiply the original matrix by its inverse and get the identity.\\
+
+  In Python it is a little more complicated.  We need to bring in the numpy \underline{\href{https://docs.scipy.org/doc/numpy/reference/routines.linalg.html}{Linear Algebra}} library.  Once this library is brought in, we can use the \underline{\href{https://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.inv.html\#numpy.linalg.inv}{inv()}} method in it on our matrix.  From there we can do all the same things as in Matlab but with our Python syntax.\\
+  

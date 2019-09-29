@@ -107,7 +107,6 @@ venv.bak/
 auto/
 
 *~
-*.tex
 *.pdf
 *.aux
 *.dvi
