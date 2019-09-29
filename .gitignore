@@ -113,3 +113,4 @@ auto/
 *.out
 *.toc
 
+_minted-my_notes/
