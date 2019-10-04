@@ -26,7 +26,9 @@
 \definecolor{UCLABlue}{RGB}{83, 104, 149}
 \definecolor{UCLAGold}{RGB}{254, 187, 54}
 
-
+% Some characters were not being rendered correctly at work
+\DeclareUnicodeCharacter{2217}{*}
+\DeclareUnicodeCharacter{200B}{ }
 
 
 \author{Philip Tracton}
@@ -73,6 +75,8 @@
 \newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 
 \usepackage{graphicx}
+% https://www.overleaf.com/learn/latex/Inserting_Images
+\graphicspath{ {./plantuml/uml/} }
 \usepackage[export]{adjustbox}
 
 % For math and matrix work

@@ -1,0 +1,15 @@
+@startuml
+
+title Model Representation
+
+[*] --> Training_Set
+Training_Set --> Learning_Algorithm 
+Training_Set : This is subset of the final test data
+
+Learning_Algorithm --> h : Feed data to hyposthesis
+
+x --> h 
+h --> y 
+
+
+@enduml
