@@ -8,8 +8,11 @@ Training_Set : This is subset of the final test data
 
 Learning_Algorithm --> h : Feed data to hyposthesis
 
-x --> h 
-h --> y 
+x -right-> h
+x: input data
+h -right-> y
+h: hypothesis
+y: predicted value
 
 
 @enduml

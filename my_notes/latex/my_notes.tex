@@ -26,11 +26,6 @@
 \definecolor{UCLABlue}{RGB}{83, 104, 149}
 \definecolor{UCLAGold}{RGB}{254, 187, 54}
 
-% Some characters were not being rendered correctly at work
-\DeclareUnicodeCharacter{2217}{*}
-\DeclareUnicodeCharacter{200B}{ }
-
-
 \author{Philip Tracton}
 \date{\today}
 \date{}
@@ -96,8 +91,15 @@
 % https://tex.stackexchange.com/questions/27802/set-noindent-for-entire-file/27804
 \setlength\parindent{0pt}
 
+\usepackage[utf8]{inputenc}
+
 % American Math Society Symbols package
 \usepackage{amssymb}
+
+% Some characters were not being rendered correctly at work
+\DeclareUnicodeCharacter{2217}{*}
+\DeclareUnicodeCharacter{200B}{ }
+
 
 \newmintedfile[matlabcode]{matlab}{
 bgcolor=Background,
