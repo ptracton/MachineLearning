@@ -83,3 +83,51 @@ J(\theta_{0}, \theta_{1}) = \frac{1}{2m} \sum_{i=1}^{m} (\theta_{0} + \theta_{1}
 \end{equation}
 
 Choose $\theta_{0}, \theta_{1}$ so that $h_{\theta}(x)$ is close to $y$ for training examples $(x,y)$\\
+
+\textbf{KEY NOTE:} The cost function calculates a single value based on a specific $\theta_{0}, \theta_{1}$ pair.  It does not find the best $\theta_{0}, \theta_{1}$ values.  These values are supplied.  Gradient Descent is the process of finding the best $\theta_{0}, \theta_{1}$ values.
+
+\newpage
+\begin{multicols}{2}
+  [
+    This is a cost function implementation for the simple linear equation of $h_{theta}(x) = \theta_{0} + \theta_{1}x$
+  ]
+  Matlab\\
+  \matlabcode{matlab/cost_function.m}
+  \columnbreak
+
+  Python\\
+  \pythoncode{python/cost_function.py}
+  
+\end{multicols}
+
+\newpage
+\begin{multicols}{2}
+  [
+    These are the test scripts for driving the cost\_function implementations.  Both are fed the same input data and come back with the same cost value of 0.019.
+  ]
+  Matlab\\
+  \matlabcode{matlab/test_cost_function.m}
+  \columnbreak
+
+  Python\\
+  \pythoncode{python/test_cost_function.py}
+  
+\end{multicols}
+
+\newpage
+\begin{multicols}{2}
+  [
+    This is an example of trying different values for $\theta_{0} and \theta_{1}$ and plotting the results.
+  ]
+  Matlab\\
+  \matlabcode{matlab/plot_cost_function.m}
+  \columnbreak
+
+  Python\\
+  \pythoncode{python/plot_cost_function.py}
+  
+\end{multicols}
+
+This is the graph created by python, which looks better than the one from Matlab/Octave.  There are 3 line and circles for the actual data.  The first line is the blue one across the X-Axis since we are using 0,0.  The best fit line in red has the ideal value for minimizing cost.  The last line shows it being close, but a little off.\\
+
+\includegraphics{python/plot_cost_function.png}\\
