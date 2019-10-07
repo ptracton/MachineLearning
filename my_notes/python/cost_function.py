@@ -6,8 +6,8 @@ def hypothesis_linear(theta0=None, theta1=None, x=None):
 
 
 def cost_function(X=None, Y=None, theta=None):
-    print("Cost Function X={} Y={} theta={}".format(
-        X, Y, theta))
+    # print("Cost Function X={} Y={} theta={}".format(
+    #    X, Y, theta))
     m = len(Y)
 
     sum_diff_squared = 0

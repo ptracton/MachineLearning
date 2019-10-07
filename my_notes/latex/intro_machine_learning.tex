@@ -86,6 +86,10 @@ Choose $\theta_{0}, \theta_{1}$ so that $h_{\theta}(x)$ is close to $y$ for trai
 
 \textbf{KEY NOTE:} The cost function calculates a single value based on a specific $\theta_{0}, \theta_{1}$ pair.  It does not find the best $\theta_{0}, \theta_{1}$ values.  These values are supplied.  Gradient Descent is the process of finding the best $\theta_{0}, \theta_{1}$ values.
 
+If we try to think of it in visual terms, our training data set is scattered on the x-y plane. We are trying to make a straight line (defined by $h_{\theta}(x)$) which passes through these scattered data points.\\
+
+Our objective is to get the best possible line. The best possible line will be such so that the average squared vertical distances of the scattered points from the line will be the least. Ideally, the line should pass through all the points of our training data set. In such a case, the value of $J(\theta_0, \theta_1)$ will be 0. 
+
 \newpage
 \begin{multicols}{2}
   [
@@ -131,3 +135,28 @@ Choose $\theta_{0}, \theta_{1}$ so that $h_{\theta}(x)$ is close to $y$ for trai
 This is the graph created by python, which looks better than the one from Matlab/Octave.  There are 3 line and circles for the actual data.  The first line is the blue one across the X-Axis since we are using 0,0.  The best fit line in red has the ideal value for minimizing cost.  The last line shows it being close, but a little off.\\
 
 \includegraphics{python/plot_cost_function.png}\\
+
+\subsection{Gradient Descent}
+
+\textbf{KEY NOTE}: Gradient descent uses the hyposthesis function and cost function by iterating through various $\theta_0$ and $ \theta_1$ until it finds the minimum value for the cost function.  The $\theta_0$ and $ \theta_1$ for that position are the ones we want!\\
+
+So we have our hypothesis function and we have a way of measuring how well it fits into the data. Now we need to estimate the parameters in the hypothesis function. That's where gradient descent comes in. \\
+
+Imagine that we graph our hypothesis function based on its fields $\theta_0$ and $ \theta_1$ (actually we are graphing the cost function as a function of the parameter estimates). We are not graphing x and y itself, but the parameter range of our hypothesis function and the cost resulting from selecting a particular set of parameters. \\
+
+We put $\theta_0$ on the x axis and $\theta_1$ on the y axis, with the cost function on the vertical z axis. The points on our graph will be the result of the cost function using our hypothesis with those specific theta parameters. The graph below depicts such a setup.\\
+
+PUT GRAPH HERE
+
+We will know that we have succeeded when our cost function is at the very bottom of the pits in our graph, i.e. when its value is the minimum. The red arrows show the minimum points in the graph.\\
+
+The way we do this is by taking the derivative (the tangential line to a function) of our cost function. The slope of the tangent is the derivative at that point and it will give us a direction to move towards. We make steps down the cost function in the direction with the steepest descent. The size of each step is determined by the parameter $\alpha$, which is called the learning rate.\\
+
+For example, the distance between each 'star' in the graph above represents a step determined by our parameter $\alpha$. A smaller $\alpha$ would result in a smaller step and a larger $\alpha$ results in a larger step. The direction in which the step is taken is determined by the partial derivative of $J(\theta_0,\theta_1)$. Depending on where one starts on the graph, one could end up at different points. The image above shows us two different starting points that end up in two different places. \\
+
+The Gradient Descent Algorightm is:
+\begin{equation}
+  \theta_j := \theta_j - \alpha \frac{\partial}{\partial \theta_j} J(\theta_0, \theta_1)
+\end{equation}
+
+Repeat this until it converges!
