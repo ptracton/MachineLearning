@@ -159,4 +159,183 @@ The Gradient Descent Algorightm is:
   \theta_j := \theta_j - \alpha \frac{\partial}{\partial \theta_j} J(\theta_0, \theta_1)
 \end{equation}
 
-Repeat this until it converges!
+Repeat this until it converges!  Make sure to only update all $\theta$ values once all calculations are done.  We want to keep them constant while looping through everything.
+\newpage
+\begin{multicols}{2}
+  [
+    Gradient Descent Implementation
+  ]
+  Matlab\\
+  \matlabcode{matlab/gradient_descent.m}
+  \columnbreak
+
+  Python\\
+  \pythoncode{python/gradient_descent.py}
+  
+\end{multicols}
+
+The cost function for a linear function is always bowl shaped on the 3d plot with a single global optima.
+
+\subsection{Multivariate Linear Regression}
+
+We want to predict the output \textit{y}.
+We will have multiple features $x_{0}, x_{1}, x_{2} ... x_{n}$ where n is the number of features.
+$x^{(i)}$ is the $i^{th}$ training example.
+$x^{(i)}_{j}$ is the $i^{th}$ training example for feature j
+m is the number of training examples.
+
+Multivariate Linear Hypothesis is
+\begin{equation}
+  h_{\theta}(x) = \theta_{0} + \theta_{1} * x_{1} + \theta_{2} * x_{2} ... + \theta_{n} * x_{n}
+\end{equation}
+
+if we define $x_{0} = 1$ we can redfine the equation as 
+\begin{equation}
+  h_{\theta}(x) = \theta_{0}*x_{0} + \theta_{1} * x_{1} + \theta_{2} * x_{2} ... + \theta_{n} * x_{n}
+\end{equation}
+
+Which can be expressed as vectors $
+\theta = 
+\begin{bmatrix}
+  \theta_{0} \\
+  \theta_{1} \\
+  \vdots    \\ 
+  \theta_{n} \\
+\end{bmatrix} $
+and x = $
+\begin{bmatrix}
+  x_{0} \\
+  x_{1} \\
+  \vdots    \\ 
+  x_{n} \\
+\end{bmatrix} $
+
+Which when put together in a linear algebra equation takes the form of
+\begin{equation}
+  h_{\theta}(x) = \Theta^{T}x
+\end{equation}
+
+In multivariate linear regression just multiple features in our linear regression to predict y.
+
+\subsection{Gradient Descent for Multiple Variables}
+
+hypothesis:  $h_{\theta}(x) = \theta_{0}*x_{0} + \theta_{1} * x_{1} + \theta_{2} * x_{2} ... + \theta_{n} * x_{n}$ \\
+
+paramters: $\theta_{0}, \theta_{1} ... \theta_{n}$ \\
+
+cost = $J(\theta_{0}, \theta_{1} ... \theta_{n}) = \frac{1}{2m} \sum_{i=1}^{m} (h_{\theta}(x^{i}) - y(i^{2}))^{2}$ \\
+
+$J(\Theta)$ usually means the vector $\Theta$ \\
+
+The process is to repeat until convergence.  We converge once the change in cost gets too small to really matter.
+The general form for more than 1 feature is:
+\begin{equation}
+  \theta_{j} := \theta_{j} - \alpha *\frac{1}{m} \sum_{i=1}^{m} (h_{\theta}(x^{i}) -y^{i})*x_{j}^{i}
+\end{equation}
+
+This works out as:
+\begin{equation}
+  \begin{aligned}
+  \theta_{0} := \theta_{0} - \alpha *\frac{1}{m} \sum_{i=1}^{m} (h_{\theta}(x^{i}) -y^{i})*x_{0}^{i} \\
+  \theta_{1} := \theta_{1} - \alpha *\frac{1}{m} \sum_{i=1}^{m} (h_{\theta}(x^{i}) -y^{i})*x_{1}^{i} \\
+  \theta_{2} := \theta_{2} - \alpha *\frac{1}{m} \sum_{i=1}^{m} (h_{\theta}(x^{i}) -y^{i})*x_{2}^{i} \\  
+  \vdots \\  
+  \theta_{n} := \theta_{n} - \alpha *\frac{1}{m} \sum_{i=1}^{m} (h_{\theta}(x^{i}) -y^{i})*x_{n}^{i} \\
+  \end{aligned} 
+\end{equation}
+
+\subsubsection{Example}
+
+Housing Data\\
+\begin{tabular}{|c|c|c|c|c|}
+  \hline
+  Size & Bedrooms & Floors & Age & Price \\ \hline
+  2104 & 5 & 1 & 45 & 460 \\ \hline
+  1416 & 3 & 2 & 40 & 232 \\ \hline
+  1534 & 3 & 2 & 30 & 315 \\ \hline
+  852  & 2 & 1 & 36 & 178 \\ \hline
+\end{tabular}
+$
+x^{2} = \begin{bmatrix}
+  1416 \\
+  3 \\
+  2   \\ 
+  40 \\
+\end{bmatrix}
+$ \\
+$x_{3}^{2} = 2$
+
+\subsection{Feature Scaling}
+
+Idea: A problem with multiple features, make sure all features are on similar scales, Gradient Descent will converge more quickly.\\
+EX:\\
+$x_{1} $ = 0 - 2000 sq feet\\
+$x_{2}$ = 1-5 bedrooms \\
+
+These are very different ranges!  Contours of cost function take on a very skewed elliptical shape.  Can take a long time for gradients to find global minimum.
+
+Scale features:\\
+$x_{1} = \frac{size in feet^{2}}{2000}$\\
+$x_{2} = \frac{number of bedrooms}{5}$
+
+This puts everyone on a 0-1 scale so they are equally weighted.  Gradient descent should work quicker.
+
+Generally want all features in a $-1 \leq x_{i} \leq 1$.  This is not a hard rule.  Should just be similar in scale.
+
+\subsubsection{Mean Normalization}
+
+Replace $x_{i}$ with $x_{i} - \mu_{i}$ to make features have approximately 0 mean.  Do \textbf{NOT} apply to $x_{0}$\\
+EX:\\
+$x_{1} = \frac{size-1000}{2000}$\\
+$x_{2} = \frac{bedrooms - 2}{5}$\\
+This puts $x_{1}$ and $x_{2}$ in between -0.5 and +0.5
+
+$x_{i} = \frac{x_{i} - \mu_{i}}{s_{i}}$ Where $\mu_{1}$ is the average value and $s_{i}$ is the range or the standard deviation.
+
+\subsection{Gradient Descent Learning Rate}
+
+Plotting $J(\theta)$ vs number of iterations, as gradient descent runs, it should be decreasing on each iteration.  Once plot levels off, we have converged or are close enough.  The number of iterations is hard to predict could be 30 or 3,000,000 or more.  Automatic convergence tests are helpful.  If cost function decreases by some small $\epsilon$ like $10^{-3}$ in an iteration.  Finding this threshold is hard.\\
+
+If $J(\theta)$ is increasing, gradient descent is not working and you should try a smaller $\alpha$\\
+
+If $J(\theta)$ is bouncing up and down, it is not working and you should try a smaller $\alpha$\\
+
+If $\alpha$ is too small, gradient descent will converge very slowly.\\
+
+To choose $\alpha$ try 0.001, 0.01, 0.1, 1..... \\
+Usually try 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1 ...\\
+
+\subsection{Features and Polynomial Regression}
+Different learning algorithms based on different features.\\
+Polynomial regression will let you fit non-linear functions.\\
+Depends on insight in problem.\\
+
+\subsubsection{Polynomial Regress}
+
+If a linear fit does not appear to match data, you can use polynomials.
+A quadratic function would look like this: $h_{\theta}(x) = \theta_{0} + \theta_{1}*x + \theta_{2}*x^{2}$
+A cubic function would look like this: $h_{\theta}(x) = \theta_{0} + \theta_{1}*x + \theta_{2}*x^{2} + \theta_{3}*x^{3}$
+
+\subsection{Normal Equation}
+
+Normal equation is a method to solve for $\theta$ analytically instead of iteratively.  One step and it's done, no process or convergence.
+
+Gradient descent gives one way of minimizing J. Let’s discuss a second way of doing so, this time performing the minimization explicitly and without resorting to an iterative algorithm. In the "Normal Equation" method, we will minimize J by explicitly taking its derivatives with respect to the $\theta$js, and setting them to zero. This allows us to find the optimum theta without iteration. The normal equation formula is given below:
+
+\begin{equation}
+  \Theta = (X^{T}X)^{-1}X^{T}y
+\end{equation}
+
+EX: For 1-D
+$$
+J(\theta) = a\theta^{2} + b\theta + c
+\frac{d}{d\theta} J(\theta) = 2a\theta + b = 0 then solve for \theta
+$$
+
+
+EX: For more than 1-D
+Take the partial for J for each $\theta$ , set to 0 and solve
+\begin{equation}
+  J(\theta_{0}....\theta_{m}) = \frac{1}{2m}\sum_{i=1}^{m} (h_{\theta}(x^{(i)}) - y^{i})^{2}
+  \frac{\partial}{\partial \theta_{j}} = ... = 0 for each j solve for all the \theta values
+\end{equation}

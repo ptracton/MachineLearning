@@ -13,7 +13,7 @@ def hypothesis_linear(theta0=None, theta1=None, x=None):
 
 def gradient_descent(theta0=None, theta1=None, epsilon=None, golden=None, MAX_STEPS=10):
     """
-    Calculate the cost function 
+    Calculate the cost function
     J(\theta_{0}, \theta_{1}) = \frac{1}{2m} \sum_{i=1}^{m} (h_{\theta}(x^{i})-y^{i})^2
     """
 
@@ -45,17 +45,19 @@ def gradient_descent(theta0=None, theta1=None, epsilon=None, golden=None, MAX_ST
                 diff_squared = diff * diff
                 sum_diff_squared = sum_diff_squared + diff_squared
             cost = 1/(2*m) * sum_diff_squared
-            #print ("Z0 = {:02f} Z1 = {:02f} Cost = {:02f}".format(z0, z1, cost))
+            # print ("Z0 = {:02f} Z1 = {:02f} Cost = {:02f}".format(z0, z1, cost))
 
             # Find the lowest possible cost
             if (cost < final_cost):
                 final_cost = cost
                 final_theta0 = z0
                 final_theta1 = z1
+                print("Final Cost = {:2f} Theta0 = {:2f} Theta1 = {:2f}".format(
+                    final_cost, final_theta0, final_theta1))
     return final_cost, final_theta0, final_theta1
 
 
 Y_GOLDEN = [0.9, 1.6, 2.4, 2.3, 3.1, 3.6, 3.7, 4.5, 5.1, 5.3]
-cost, theta0, theta1 = cost_function(-2, -2, 0.1, Y_GOLDEN, 10)
+cost, theta0, theta1 = gradient_descent(-2, -2, 0.1, Y_GOLDEN, 10)
 print("FOUND: Cost = {:02f} Theta0 = {:02f} Theta1 = {:02f}".format(
     cost, theta0, theta1))
