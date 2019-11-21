@@ -171,15 +171,173 @@ You can use even higher order polynomials leading to very complex decision bound
 
 \subsection{Logistic Regression Model}
 \subsubsection{Cost Function}
-\subsubsection{Simplified Cost Function and Gradient Descent}
-\subsubsection{Advanced Optimization}
 
-\subsection{Multiclass Classification}
-\subsubsection{One Vs All}
+We cannot use the same cost function that we use for linear regression because the Logistic Function will cause the output to be wavy, causing many local optima. In other words, it will not be a convex function.\\
 
-\subsection{Overfitting}
-\subsubsection{Cost Function}
-\subsubsection{Regularized Linear Regression}
-\subsubsection{Regularized Logistic Regression}
+Instead, our cost function for logistic regression looks like:
+\begin{equation}
+  \begin{aligned}
+    & J(\theta) = \dfrac{1}{m} \sum_{i=1}^m \mathrm{Cost}(h_\theta(x^{(i)}),y^{(i)}) \\
+    & \mathrm{Cost}(h_\theta(x),y) = -\log(h_\theta(x)) \; & \text{if y = 1} \\
+    & \mathrm{Cost}(h_\theta(x),y) = -\log(1-h_\theta(x)) \; & \text{if y = 0}
+  \end{aligned}
+\end{equation}
 
+When y = 1, we get the following plot for $J(\theta) vs h_{\theta}(x)$\\
+\includegraphics{matlab/logistic_cost_1.png} \\
+
+
+When y = 0, we get the following plot for $J(\theta) vs h_{\theta}(x)$\\
+\includegraphics{matlab/logistic_cost_2.png} \\
+
+\begin{equation}
+  \begin{aligned}
+    & \mathrm{Cost}(h_\theta(x),y) = 0 \text{ if } h_\theta(x) = y \newline
+    & \mathrm{Cost}(h_\theta(x),y) \rightarrow \infty \text{ if } y = 0 \; \mathrm{and} \; h_\theta(x) \rightarrow 1 \newline
+    & \mathrm{Cost}(h_\theta(x),y) \rightarrow \infty \text{ if } y = 1 \; \mathrm{and} \; h_\theta(x) \rightarrow 0 \newline
+  \end{aligned}
+\end{equation}
+
+If our correct answer 'y' is 0, then the cost function will be 0 if our hypothesis function also outputs 0. If our hypothesis approaches 1, then the cost function will approach infinity.\\
+
+If our correct answer 'y' is 1, then the cost function will be 0 if our hypothesis function outputs 1. If our hypothesis approaches 0, then the cost function will approach infinity.\\
+
+Note that writing the cost function in this way guarantees that $J(\theta)$ is convex for logistic regression.\\ 
+
+
+\textbf{Problem:}\\
+How to choose parameters $\theta$?\\
+Training Set: ${(x^{(1)}, y^{(1)}), (x^{(2)}, y^{(2)}), (x^{(3)}, y^{(3)}) ... (x^{(m)}, y^{(m)}) }$\\
+m example $x \in   \begin{aligned}
+  & \begin{bmatrix}
+    x_{0}\\
+    x_{1}\\
+    \vdots\\
+    x_{n}\\    
+    \end{bmatrix}
+\end{aligned}
+  $\\
+
+  With $x_{0}=1$ and $y \in {0,1}$ this mean y must be 0 or 1.\\
+  $h_{\theta}(x) = \frac{1}{1+e^{\theta^{T}X}}$\\
+
+  
+  Linear Regression Cost:
+  \begin{equation}
+    J(\theta) = \frac{1}{m} \sum_{i=1}^{m} \frac{1}{2} (h_{\theta}(x^{(i)}) - y^{(i)})^{2}
+  \end{equation}
+
+  Redefine this as:
+  \begin{equation}
+    Cost(h_{theta}(x^{(i)}), y^{(i)} ) = \frac{1}{2} (h_{\theta}(x^{(i)}) - y^{(i)})^{2}
+  \end{equation}
+  This doesn't work right for logistic regression.  It would be non-convex.  Create many local optima.  Gradient descent is not guaranteed to find global minima.
+
+  Logistic Regression Cost Function\\
+  \begin{equation}
+    Cost(h_{theta}(x), y) = \Bigg \{
+    \begin{aligned}
+      &-log(h_{\theta}(x))  & if y =1 \\
+      &-log(1-h_{\theta}(x)) & if y = 0\\
+    \end{aligned}
+  \end{equation}\\
+
+  Cost =0 if y=1 and $h_{\theta}(x)$=1 but as $h_{\theta}(x) \rightarrow 0$, cost $\rightarrow \infty$\\
+  This captures the idea that if $h_{\theta}(x)$=0 but y =1, we will penalize the algorithm by a large cost.\\
+  
+  \subsubsection{Simplified Cost Function and Gradient Descent}
+  We can compress our cost function's two conditional cases into one case:\\
+  $Cost(h_{\theta}(x),y)= -ylog(h_{\theta}(x))-(1-y)log(1-h_{\theta}(x))$\\
+
+  
+  Notice that when y is equal to 1, then the second term $(1-y)\log(1-h_\theta(x))$  will be zero and will not affect the result. If y is equal to 0, then the first term $-y \log(h_\theta(x))$ will be zero and will not affect the result.
+
+  We can fully write out our entire cost function as follows:
+  \begin{equation}
+    \mathrm{Cost}(h_\theta(x),y) = - y \; \log(h_\theta(x)) - (1 - y) \log(1 - h_\theta(x))
+  \end{equation}
+
+  A vectorized implementation is:\\
+  \begin{equation}
+    \begin{aligned}
+      & h = g(X\theta)\\
+      & J(\theta) = \frac{1}{m} \cdot \left(-y^{T}\log(h)-(1-y)^{T}\log(1-h)\right)
+    \end{aligned}    
+  \end{equation}
+
+  Remember that the general form of gradient descent is:
+  \begin{equation}
+    \begin{aligned}
+      & Repeat \; \lbrace \\
+      & \; \theta_j := \theta_j - \alpha \dfrac{\partial}{\partial \theta_j}J(\theta) \\
+      & \rbrace\end{aligned}
+  \end{equation}
+
+  We can work out the derivative part using calculus to get:\\
+  \begin{equation}
+    \begin{aligned}
+      & Repeat \; \lbrace \\
+      & \; \theta_j := \theta_j - \frac{\alpha}{m} \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)}) x_j^{(i)} \\
+      & \rbrace
+    \end{aligned}
+  \end{equation}
+
+  Notice that this algorithm is identical to the one we used in linear regression. We still have to simultaneously update all values in theta.
+
+  A vectorized implementation is:
+  \begin{equation}
+    \theta := \theta - \frac{\alpha}{m} X^{T}(g(X\theta) - \overrightarrow{y})
+  \end{equation}
+  
+  \subsubsection{Advanced Optimization}
+
+  "Conjugate gradient", "BFGS", and "L-BFGS" are more sophisticated, faster ways to optimize $\theta$ that can be used instead of gradient descent. We suggest that you should not write these more sophisticated algorithms yourself (unless you are an expert in numerical computing) but use the libraries instead, as they're already tested and highly optimized. Octave provides them.\\
+  
+  We first need to provide a function that evaluates the following two functions for a given input value $\theta$:\\
+  
+  $J(\theta)$\\
+  $\frac{\partial}{\partial \theta_{j}} J(\theta)$
+
+  \matlabcode{matlab/cost_function_psuedo.m}
+
+  Then we can use octave's "fminunc()" optimization algorithm along with the "optimset()" function that creates an object containing the options we want to send to "fminunc()".\\
+  
+  \matlabcode{matlab/optimize_psuedo.m}
+
+  We give to the function "fminunc()" our cost function, our initial vector of theta values, and the "options" object that we created beforehand.
+  
+  \subsection{Multiclass Classification}
+  Example:\\
+  Auto sort email into folders: Work, Friends, Family, Other.\\
+  Medical Diagnosis: Not Ill, Cold, Flu\\
+  Weather: Sunny, Cloudy, Rain, Snow\\
+
+  Y can have a small number of discrete values.\\
+
+  If we have 3 classes, go through all possible combinations of 1 vs rest\\
+  $h_{\theta}^{(1)}{x} = $ class 1 vs all others, learns to detect class 1\\
+  $h_{\theta}^{(2)}{x} = $ class 2 vs all others, learns to detect class 2\\
+  $h_{\theta}^{(3)}{x} = $ class 3 vs all others, learns to detect class 3\\
+  $h_{\theta}^{(i)}{x} = P(y=i|x;\theta)$ for i = 1,2,3\\
+  This is about finding the probability of a particular class.\\
+  Pick the best i\\
+  
+  
+Now we will approach the classification of data when we have more than two categories. Instead of y = {0,1} we will expand our definition so that y = {0,1...n}. \\
+
+Since y = {0,1...n}, we divide our problem into n+1 (+1 because the index starts at 0) binary classification problems; in each one, we predict the probability that 'y' is a member of one of our classes.\\
+
+We are basically choosing one class and then lumping all the others into a single second class. We do this repeatedly, applying binary logistic regression to each case, and then use the hypothesis that returned the highest value as our prediction.\\
+
+Train a logistic regression classifier $h_\theta(x)$ for each class to predict the probability that y = i.
+
+To make a prediction on a new x, pick the class that maximizes $h_\theta (x)$
+
+  \subsubsection{One Vs All}
+  
+  \subsection{Overfitting}
+  \subsubsection{Cost Function}
+  \subsubsection{Regularized Linear Regression}
+  \subsubsection{Regularized Logistic Regression}
+  
 
